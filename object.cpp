@@ -9,25 +9,28 @@
 //インクルード
 //================================================
 #include "object.h"
+#include "camera.h"
+#include "manager.h"
 
 //================================================
 //静的
 //================================================
 int CObject::m_nNumAll = 0;//オブジェクト総数
-CObject* CObject::m_apObject[10] = {};//オブジェクトのポインタ配列
+CObject* CObject::m_apObject[OBJECT_PRIORITY_MAX][OBJECT_MAX] = {};
 
 //================================================
 //コンストラクタ
 //================================================
-CObject::CObject()
+CObject::CObject(int nPriority)
 {
-	for (int nCntObject = 0; nCntObject < 10; nCntObject++)
+	for (int nCntObject = 0; nCntObject < OBJECT_MAX; nCntObject++)
 	{
-		if (m_apObject[nCntObject] == NULL)
+		if (m_apObject[nPriority][nCntObject] == NULL)
 		{
-			m_apObject[nCntObject] = this;//自分自身の代入
-			m_nID = nCntObject;//自分自身のIDを保存
-			m_nNumAll++;//総数をカウントアップ
+			m_nPriority = nPriority;
+			m_apObject[m_nPriority][nCntObject] = this;
+			m_nID = nCntObject;
+			m_nNumAll++;
 			break;
 		}
 	}
@@ -41,17 +44,41 @@ CObject::~CObject()
 }
 
 //================================================
+//破棄処理
+//================================================
+void CObject::Release(void)
+{
+	int nIdx = this->m_nID;
+	int nPriority = this->m_nPriority;
+
+	if (m_apObject[nPriority][nIdx] != NULL)
+	{
+		delete m_apObject[nPriority][nIdx];
+		m_apObject[nPriority][nIdx] = NULL;
+		m_nNumAll--;
+	}
+}
+
+//================================================
 //全体破棄処理
 //================================================
 void CObject::ReleaseAll(void)
 {
-	for (int nCntObject = 0; nCntObject < 10; nCntObject++)
+
+	for (int nCntPriority = 0; nCntPriority < OBJECT_PRIORITY_MAX; nCntPriority++)
 	{
-		if (m_apObject[nCntObject] != NULL)
+		for (int nCntObject = 0; nCntObject < OBJECT_MAX; nCntObject++)
 		{
-			m_apObject[nCntObject]->Uninit();
+			if (m_apObject[nCntPriority][nCntObject] != NULL)
+			{
+				m_apObject[nCntPriority][nCntObject]->Uninit();
+			}
 		}
 	}
+	CCamera* pCamera = CManager::GetCamera();
+
+	pCamera->Uninit();
+
 }
 
 //================================================
@@ -59,13 +86,19 @@ void CObject::ReleaseAll(void)
 //================================================
 void CObject::UpdateAll(void)
 {
-	for (int nCntObject = 0; nCntObject < 10; nCntObject++)
+	for (int nCntPriority = 0; nCntPriority < OBJECT_PRIORITY_MAX; nCntPriority++)
 	{
-		if (m_apObject[nCntObject] != NULL)
+		for (int nCntObject = 0; nCntObject < OBJECT_MAX; nCntObject++)
 		{
-			m_apObject[nCntObject]->Update();
+			if (m_apObject[nCntPriority][nCntObject] != NULL)
+			{
+				m_apObject[nCntPriority][nCntObject]->Update();
+			}
 		}
 	}
+	CCamera* pCamera = CManager::GetCamera();
+
+	pCamera->Update();
 
 }
 
@@ -74,11 +107,38 @@ void CObject::UpdateAll(void)
 //================================================
 void CObject::DrawAll(void)
 {
-	for (int nCntObject = 0; nCntObject < 10; nCntObject++)
+
+	for (int nCntPriority = 0; nCntPriority < OBJECT_PRIORITY_MAX; nCntPriority++)
 	{
-		if (m_apObject[nCntObject] != NULL)
+		for (int nCntObject = 0; nCntObject < OBJECT_MAX; nCntObject++)
 		{
-			m_apObject[nCntObject]->Draw();
+			if (m_apObject[nCntPriority][nCntObject] != NULL)
+			{
+				m_apObject[nCntPriority][nCntObject]->Draw();
+			}
 		}
 	}
+
+	CCamera* pCamera = CManager::GetCamera();
+
+	pCamera->SetCamera();
+
 }
+
+//================================================
+//タイプセット処理
+//================================================
+void CObject::SetType(OBJECT_TYPE type)
+{
+	m_type = type;
+}
+
+//================================================
+//タイプ取得処理
+//================================================
+CObject::OBJECT_TYPE CObject::GetType(void)
+{
+	return m_type;
+}
+
+

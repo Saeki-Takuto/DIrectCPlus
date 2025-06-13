@@ -15,6 +15,8 @@
 //================================================
 //静的メンバ変数
 //================================================	
+CDebugProc* CRenderer::m_pDebug = nullptr;
+int CRenderer::m_fps = 0;
 
 //================================================
 //コンストラクタ
@@ -23,6 +25,8 @@ CRenderer::CRenderer()
 {
 	m_pD3D = NULL;
 	m_pD3DDevice = NULL;
+	m_dwFrameCount = 0;
+	m_dwFPSLastTime = timeGetTime();
 }
 
 //================================================
@@ -100,6 +104,8 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
+	m_pDebug->Init();
+
 	return S_OK;
 }
 
@@ -108,6 +114,8 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 //================================================
 void CRenderer::Uninit(void)
 {
+	m_pDebug->Uninit();
+
 	CObject::ReleaseAll();
 
 	//Direct3Dデバイスの破棄
@@ -131,6 +139,17 @@ void CRenderer::Uninit(void)
 void CRenderer::Update(void)
 {
 	CObject::UpdateAll();
+
+	DWORD dwCurrentTime = timeGetTime();
+
+	m_dwFrameCount++;
+
+	if ((dwCurrentTime - m_dwFPSLastTime) >= 500) //0.5秒ごとに計測
+	{
+		m_fps = (m_dwFrameCount * 1000) / (dwCurrentTime - m_dwFPSLastTime);
+		m_dwFPSLastTime = dwCurrentTime;
+		m_dwFrameCount = 0;
+	}
 }
 
 //================================================
@@ -148,6 +167,10 @@ void CRenderer::Draw(void)
 	{//描画開始が成功した場合
 
 		CObject::DrawAll();
+
+		m_pDebug->Print("FPS:%d",m_fps);
+
+		m_pDebug->Draw();
 
 		//描画終了
 		m_pD3DDevice->EndScene();
