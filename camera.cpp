@@ -121,6 +121,33 @@ void CCamera::Update(void)
 		}
 	}
 
+	//’Ž‹“_‚Ìù‰ñ
+	if (pInputKeyboard->Repeat(DIK_Q) == true)
+	{
+		m_rot.z += 0.01f;
+		m_posR.y += sinf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+		m_posR.x += cosf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+
+		if (m_rot.z > D3DX_PI)
+		{
+			m_rot.z -= D3DX_PI * 2;
+		}
+
+	}
+	else if (pInputKeyboard->Repeat(DIK_E) == true)
+	{
+		m_rot.z -= 0.01f;
+		m_posR.y += sinf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+		m_posR.x += cosf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+
+		if (m_rot.z < -D3DX_PI)
+		{
+			m_rot.z += D3DX_PI * 2;
+		}
+
+	}
+
+
 	//Šp“x‚Ì³‹K‰»
 	m_posV.x = m_posR.x + cosf(m_rot.x) * sinf(m_rot.y) * m_Distance;
 	m_posV.y = m_posR.y + sinf(m_rot.x) * m_Distance;

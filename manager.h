@@ -53,12 +53,15 @@ public:
 	static CPlayer* GetPlayer(void);
 	static CCamera* GetCamera(void);
 	static CLight* GetLight(void);
+	static CObject3D* GetObject3D(void);
 
 
 private:
 	static CRenderer* m_pRenderer;
 	static CInputKeyboard* m_pInputKeyboard;
 	static CPlayer* m_pPlayer;
+	static CObject3D* m_pObject3D;
+
 	static CCamera* m_pCamera;
 	static CLight* m_pLight;
 };

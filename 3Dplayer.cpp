@@ -452,6 +452,11 @@ void C3DPlayer::Update(void)
 		}
 	}
 
+	//Object3D‚ðŽæ“¾
+	CObject3D* pObject3D = CManager::GetObject3D();
+
+	//ƒvƒŒƒCƒ„[‚ªobject3D‚Ì“à‘¤‚É‚¢‚é‚Æ‚«
+	m_pos.y = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
 }
 
 //================================================

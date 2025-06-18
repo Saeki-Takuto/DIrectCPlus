@@ -23,6 +23,7 @@
 CRenderer* CManager::m_pRenderer = NULL;
 CInputKeyboard* CManager::m_pInputKeyboard = NULL;
 CPlayer* CManager::m_pPlayer = NULL;
+CObject3D* CManager::m_pObject3D = NULL;
 CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
 
@@ -144,6 +145,8 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	//	0.0f
 	//);
 
+	m_pObject3D = CObject3D::Create();
+
 	// ÉXÉRÉAê∂ê¨
 	CScore::Create(
 		CScore::SCORE_TYPE_NORMAL_01,
@@ -259,4 +262,9 @@ CCamera* CManager::GetCamera(void)
 CLight* CManager::GetLight(void)
 {
 	return m_pLight;
+}
+
+CObject3D* CManager::GetObject3D(void)
+{
+	return m_pObject3D;
 }

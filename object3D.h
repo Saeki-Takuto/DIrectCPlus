@@ -16,6 +16,8 @@
 //================================================
 //マクロ定義
 //================================================
+#define WIDTH (150)
+#define HEIGHT (150)
 
 //================================================
 //クラス
@@ -43,6 +45,8 @@ public:
 	D3DXVECTOR2 GetPos(void) override;
 	int GetWidth(void) override;
 	int GetHeight(void) override;
+
+	float GetHeightMesh(float posx, float posz);
 
 private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffPolygon = NULL;//頂点バッファへのポインタ
