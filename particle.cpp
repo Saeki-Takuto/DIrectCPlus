@@ -115,7 +115,7 @@ void CParticle::Update(void)
 			0, 0,
 			0, 0,
 			0,
-			m_pos.x, m_pos.y,
+			m_pos.x, m_pos.y,m_pos.z,
 			0.0f,
 			0.0f,
 			m_Life
@@ -195,10 +195,10 @@ int CParticle::GetParticleCount(void)
 	return m_ParticleCount;
 }
 
-D3DXVECTOR2 CParticle::GetPos(void)
+D3DXVECTOR3 CParticle::GetPos(void)
 {
 	// 必要に応じて適切な値を返す
-	return D3DXVECTOR2(m_pos.x, m_pos.y);
+	return D3DXVECTOR3(m_pos.x, m_pos.y,m_pos.z);
 }
 
 int CParticle::GetWidth(void)

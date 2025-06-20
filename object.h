@@ -38,7 +38,7 @@ public:
 	virtual void Uninit(void)=0;
 	virtual void Update(void)=0;
 	virtual void Draw(void)=0;
-	virtual D3DXVECTOR2 GetPos() = 0;
+	virtual D3DXVECTOR3 GetPos() = 0;
 	virtual int GetWidth() = 0;
 	virtual int GetHeight() = 0;
 

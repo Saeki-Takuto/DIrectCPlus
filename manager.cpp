@@ -26,6 +26,8 @@ CPlayer* CManager::m_pPlayer = NULL;
 CObject3D* CManager::m_pObject3D = NULL;
 CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
+C3DPlayer* CManager::m_p3DPlayer = NULL;
+CWall* CManager::m_pWall = NULL;
 
 //================================================
 //コンストラクタ
@@ -146,12 +148,13 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	//);
 
 	m_pObject3D = CObject3D::Create();
+	m_pWall = CWall::Create();
 
 	// スコア生成
 	CScore::Create(
 		CScore::SCORE_TYPE_NORMAL_01,
 		4, 0, // 桁数と初期値
-		D3DXVECTOR2(1200, 50), // 中心座標
+		D3DXVECTOR3(1200, 50,0), // 中心座標
 		30.0f, 50.0f, 4.0f // 幅、高さ、スペース
 	);
 
@@ -159,7 +162,7 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 
 	//CObjectX::Create();
 
-	C3DPlayer::Create();
+	m_p3DPlayer = C3DPlayer::Create();
 
 	return S_OK;
 }
@@ -267,4 +270,14 @@ CLight* CManager::GetLight(void)
 CObject3D* CManager::GetObject3D(void)
 {
 	return m_pObject3D;
+}
+
+C3DPlayer* CManager::Get3DPlayer(void)
+{
+	return m_p3DPlayer;
+}
+
+CWall* CManager::GetWall(void)
+{
+	return m_pWall;
 }

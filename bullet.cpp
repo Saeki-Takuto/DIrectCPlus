@@ -65,7 +65,7 @@ void CBullet::Update(void)
     if (m_Life<0)
     {
         // 爆発エフェクト
-        D3DXVECTOR2 pos = GetPos();
+        D3DXVECTOR3 pos = GetPos();
         //CExplosion* pExplosion = CExplosion::Create(
         //    CExplosion::EXPLOSION_TYPE_NORMAL_01,
         //    TYPE_NORMAL,
@@ -84,7 +84,7 @@ void CBullet::Update(void)
         return;
     }
 
-    D3DXVECTOR2 pos = GetPos();
+    D3DXVECTOR3 pos = GetPos();
     D3DXVECTOR3 move = GetMove();
 
 
@@ -96,7 +96,7 @@ void CBullet::Update(void)
         0, 0,                
         0, 0,               
         0,                  
-        pos.x, pos.y, 
+        pos.x, pos.y,pos.z, 
         0.0f,           
         0.0f,                  
         10            
@@ -137,6 +137,7 @@ CBullet* CBullet::Create(
     int animePattern,
     float posX,
     float posY,
+	float posZ,
     float rotZ,
     float speed,
     int nLife
@@ -149,7 +150,7 @@ CBullet* CBullet::Create(
     pBullet->SetAnimeFrameU(animeFrameU);
     pBullet->SetAnimeFrameV(animeFrameV);
     pBullet->SetAnimePattern(animePattern);
-    pBullet->SetPos(D3DXVECTOR2(posX, posY));
+    pBullet->SetPos(D3DXVECTOR3(posX, posY,posZ));
     D3DXVECTOR3 rot = pBullet->GetRot();
     rot.z = rotZ;
     pBullet->SetRot(rot);
@@ -168,7 +169,7 @@ CBullet* CBullet::Create(
 //================================================
 //敵との当たり判定処理
 //================================================
-bool CBullet::CollisionEnemy(D3DXVECTOR2 pos)
+bool CBullet::CollisionEnemy(D3DXVECTOR3 pos)
 {
     for (int nPriority = 0; nPriority < OBJECT_PRIORITY_MAX; nPriority++)
     {
@@ -188,8 +189,8 @@ bool CBullet::CollisionEnemy(D3DXVECTOR2 pos)
 
                 if (type == CObject::TYPE_ENEMY)
                 {// 種類が敵だった場合
-                    D3DXVECTOR2 posEnemy = pObj->GetPos();
-                    D3DXVECTOR2 posBullet = this->GetPos();
+                    D3DXVECTOR3 posEnemy = pObj->GetPos();
+                    D3DXVECTOR3 posBullet = this->GetPos();
                     int fWidthObj = pObj->GetWidth();
                     int  fHeightObj = pObj->GetHeight();
 
@@ -206,7 +207,7 @@ bool CBullet::CollisionEnemy(D3DXVECTOR2 pos)
                                     100, 100,
                                     0.0f, 0.0f,
                                     8, 1, 0,
-                                    posEnemy.x, posEnemy.y,
+                                    posEnemy.x, posEnemy.y,posEnemy.z,
                                     0.0f
                                 );
                             }
@@ -218,7 +219,7 @@ bool CBullet::CollisionEnemy(D3DXVECTOR2 pos)
                                     100, 100,
                                     0.0f, 0.0f,
                                     8, 1, 0,
-                                    posEnemy.x, posEnemy.y,
+                                    posEnemy.x, posEnemy.y,posEnemy.z,
                                     0.0f
                                 );
                             }

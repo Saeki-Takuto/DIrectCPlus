@@ -1,16 +1,16 @@
-#include "object3D.h"
+#include "wall.h"
 #include "renderer.h"
 #include "manager.h"
 
-CObject3D::CObject3D()
+CWall::CWall()
 {
 }
 
-CObject3D::~CObject3D()
+CWall::~CWall()
 {
 }
 
-HRESULT CObject3D::Init(void)
+HRESULT CWall::Init(void)
 {
 	//デバイスの取得
 	CRenderer* renderer = CManager::GetRenderer();
@@ -18,7 +18,7 @@ HRESULT CObject3D::Init(void)
 
 	//テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice,
-		"data/TEXTURE/base.jpeg",
+		"data/TEXTURE/WALL.png",
 		&m_pTexturePolygon);
 
 	//頂点バッファの設定
@@ -28,15 +28,19 @@ HRESULT CObject3D::Init(void)
 		D3DPOOL_MANAGED,
 		&m_pVtxBuffPolygon, NULL);
 
+	m_posPolygon.z = 150.0f;
+	m_posPolygon.y = 700.0f;
+
 	VERTEX_3D* pVtx = NULL;
 	//頂点バッファをロック
 	m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標を設定
-	pVtx[0].pos = D3DXVECTOR3(-WIDTH, 0.0f,+ HEIGHT);
-	pVtx[1].pos = D3DXVECTOR3(+WIDTH, 0.0f + 50.0f, + HEIGHT);
-	pVtx[2].pos = D3DXVECTOR3(-WIDTH, 0.0f + 50.0f, - HEIGHT);
-	pVtx[3].pos = D3DXVECTOR3(+WIDTH, 0.0f,- HEIGHT);
+	pVtx[0].pos = D3DXVECTOR3(-WALL_WIDTH, +WALL_HEIGHT,0.0f);
+	pVtx[1].pos = D3DXVECTOR3(+WALL_WIDTH, +WALL_HEIGHT,0.0f);
+	pVtx[2].pos = D3DXVECTOR3(-WALL_WIDTH, -WALL_HEIGHT,0.0f);
+	pVtx[3].pos = D3DXVECTOR3(+WALL_WIDTH, -WALL_HEIGHT,0.0f);
+
 
 	//各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
 	pVtx[0].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
@@ -52,9 +56,9 @@ HRESULT CObject3D::Init(void)
 
 	//テクスチャ座標の設定
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+	pVtx[1].tex = D3DXVECTOR2(2.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 8.0f);
+	pVtx[3].tex = D3DXVECTOR2(2.0f, 8.0f);
 
 	// 頂点座標
 	D3DXVECTOR3 a = pVtx[0].pos;
@@ -90,7 +94,7 @@ HRESULT CObject3D::Init(void)
 	return S_OK;
 }
 
-void CObject3D::Uninit(void)
+void CWall::Uninit(void)
 {
 	if (m_pVtxBuffPolygon != NULL)
 	{
@@ -105,7 +109,7 @@ void CObject3D::Uninit(void)
 	}
 }
 
-void CObject3D::Update(void)
+void CWall::Update(void)
 {
 	CInputKeyboard* pInputKeyboard;
 	pInputKeyboard = CManager::GetInputKeyboard();
@@ -120,10 +124,10 @@ void CObject3D::Update(void)
 	m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標を設定
-	pVtx[0].pos = D3DXVECTOR3(-WIDTH, 0.0f, +HEIGHT);
-	pVtx[1].pos = D3DXVECTOR3(+WIDTH, 0.0f + 0.0f, +HEIGHT);
-	pVtx[2].pos = D3DXVECTOR3(-WIDTH, 0.0f + 0.0f, -HEIGHT);
-	pVtx[3].pos = D3DXVECTOR3(+WIDTH, .0f, -HEIGHT);
+	pVtx[0].pos = D3DXVECTOR3(-WALL_WIDTH, +WALL_HEIGHT, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(+WALL_WIDTH, +WALL_HEIGHT, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(-WALL_WIDTH, -WALL_HEIGHT, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(+WALL_WIDTH, -WALL_HEIGHT, 0.0f);
 
 	//各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
 	pVtx[0].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
@@ -137,11 +141,11 @@ void CObject3D::Update(void)
 	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
-	//テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
+	////テクスチャ座標の設定
+	//pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	//pVtx[1].tex = D3DXVECTOR2(5.0f, 0.0f);
+	//pVtx[2].tex = D3DXVECTOR2(0.0f, 5.0f);
+	//pVtx[3].tex = D3DXVECTOR2(5.0f, 5.0f);
 
 	//頂点バッファのアンロック
 	m_pVtxBuffPolygon->Unlock();
@@ -149,7 +153,7 @@ void CObject3D::Update(void)
 
 }
 
-void CObject3D::Draw(void)
+void CWall::Draw(void)
 {
 	//デバイスの取得
 	CRenderer* renderer = CManager::GetRenderer();
@@ -204,34 +208,35 @@ void CObject3D::Draw(void)
 
 	//ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
 }
 
-CObject3D* CObject3D::Create(void)
+CWall* CWall::Create(void)
 {
-	CObject3D* pObject3D = new CObject3D;
+	CWall* pObject3D = new CWall;
 	pObject3D->Init();
 
 	return pObject3D;
 }
 
-D3DXVECTOR3 CObject3D::GetPos(void)
+D3DXVECTOR3 CWall::GetPos(void)
 {
-	return D3DXVECTOR3(m_posPolygon.x, m_posPolygon.y,m_posPolygon.z);
+	return D3DXVECTOR3(m_posPolygon.x, m_posPolygon.y, m_posPolygon.z);
 }
 
-int CObject3D::GetWidth(void)
-{
-	// 必要に応じて適切な値を返す（例: 300）
-	return 300;
-}
-
-int CObject3D::GetHeight(void)
+int CWall::GetWidth(void)
 {
 	// 必要に応じて適切な値を返す（例: 300）
 	return 300;
 }
 
-float CObject3D::GetHeightMesh(float posx, float posz)
+int CWall::GetHeight(void)
+{
+	// 必要に応じて適切な値を返す（例: 300）
+	return 300;
+}
+
+float CWall::GetHeightMesh(float posx, float posz)
 {
 	float X = posx - m_posPolygon.x;
 	float Z = posz - m_posPolygon.z;
@@ -243,7 +248,7 @@ float CObject3D::GetHeightMesh(float posx, float posz)
 	m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 
 	//XとZがポリゴンの内側にいる
-	if ((X >= -WIDTH && X <= WIDTH) && (Z >= -HEIGHT && Z <= HEIGHT))
+	if ((X >= -WALL_WIDTH && X <= WALL_WIDTH) && (Z >= -WALL_HEIGHT && Z <= WALL_HEIGHT))
 	{
 		float s1 = ((pVtx[1].pos.x - pVtx[0].pos.x) * (Z - pVtx[0].pos.z) - (pVtx[1].pos.z - pVtx[0].pos.z) * (X - pVtx[0].pos.x));
 		float s2 = ((pVtx[2].pos.x - pVtx[1].pos.x) * (Z - pVtx[1].pos.z) - (pVtx[2].pos.z - pVtx[1].pos.z) * (X - pVtx[1].pos.x));
@@ -275,7 +280,7 @@ float CObject3D::GetHeightMesh(float posx, float posz)
 }
 
 
-//float CObject3D::GetHeightMesh(float posx, float posz)
+//float CWall::GetHeightMesh(float posx, float posz)
 //{
 //	float X = posx - m_posPolygon.x;
 //	float Z = posz - m_posPolygon.z;
@@ -283,7 +288,7 @@ float CObject3D::GetHeightMesh(float posx, float posz)
 //	VERTEX_3D* pVtx = NULL;
 //	m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 //
-//	if ((X >= -WIDTH && X <= WIDTH) && (Z >= -HEIGHT && Z <= HEIGHT))
+//	if ((X >= -WALL_WIDTH && X <= WALL_WIDTH) && (Z >= -WALL_HEIGHT && Z <= WALL_HEIGHT))
 //	{
 //		D3DXVECTOR3 a = pVtx[0].pos;
 //		D3DXVECTOR3 b = pVtx[1].pos;
@@ -327,7 +332,7 @@ float CObject3D::GetHeightMesh(float posx, float posz)
 
 
 
-//float CObject3D::GetHeightMesh(float posx, float posz)
+//float CWall::GetHeightMesh(float posx, float posz)
 //{
 //
 //	VERTEX_3D* pVtx = NULL;
@@ -335,7 +340,7 @@ float CObject3D::GetHeightMesh(float posx, float posz)
 //	m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 //
 //	// ポリゴンの範囲内か判定
-//	if ((posx >= m_posPolygon.x - WIDTH && posx <= m_posPolygon.x + WIDTH) && (posz >= m_posPolygon.z - HEIGHT && posz <= m_posPolygon.z + HEIGHT))
+//	if ((posx >= m_posPolygon.x - WALL_WIDTH && posx <= m_posPolygon.x + WALL_WIDTH) && (posz >= m_posPolygon.z - WALL_HEIGHT && posz <= m_posPolygon.z + WALL_HEIGHT))
 //	{
 //		D3DXVECTOR3 a = pVtx[0].pos;
 //		D3DXVECTOR3 b = pVtx[1].pos;

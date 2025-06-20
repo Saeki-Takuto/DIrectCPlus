@@ -33,7 +33,9 @@ public:
     void Update(void);
     void Draw(void);
 
-    D3DXVECTOR2 GetPos(void) override;
+    D3DXVECTOR3 GetPos(void) override;
+    D3DXVECTOR3 GetRot(void);
+    D3DXVECTOR3 GetMove(void);
     int GetWidth(void) override;
     int GetHeight(void) override;
 
@@ -43,6 +45,8 @@ private:
     D3DXMATRIX m_mtxWorld;
     D3DXVECTOR3 m_rotDest;
     D3DXVECTOR3 m_move;
+    bool m_bJump;
+    bool m_bOnGround;
     CModel* m_apModel[MAX_PARTS];
     int m_nNumModel;
 };

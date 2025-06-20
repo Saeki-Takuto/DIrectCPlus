@@ -60,13 +60,14 @@ public:
 		int animePattern = 0,
 		float posX = 0.0f,
 		float posY = 0.0f,
+		float posZ = 0.0f,
 		float rotZ = 0.0f
 	);
 
 	DRAW_TYPE GetDrawType() const { return m_drawtype; }
 	D3DXVECTOR3 GetRot() const { return m_rot; }
 	D3DXVECTOR3 GetMove() const { return m_move; }
-	D3DXVECTOR2 GetPos(void) override { return m_pos; }
+	D3DXVECTOR3 GetPos(void) override { return m_pos; }
 	int GetWidth(void) override { return m_width; }
 	int GetHeight(void) override { return m_height; }	int GetAnimePattern() const { return m_animePattern; }
 	LPDIRECT3DTEXTURE9 GetTexture() const { return m_pTexture; }
@@ -80,7 +81,7 @@ public:
 	int GetAnimeCounter() const { return m_animeCounter; }
 
 	void SetDrawType(DRAW_TYPE drawtype) { m_drawtype = drawtype; }
-	void SetPos(const D3DXVECTOR2& pos) { m_pos = pos; }
+	void SetPos(const D3DXVECTOR3 pos) { m_pos = pos; }
 	void SetRot(const D3DXVECTOR3& rot) { m_rot = rot; }
 	void SetMove(const D3DXVECTOR3& move) { m_move = move; }
 	void SetWidth(int width) { m_width = width; }
@@ -99,7 +100,7 @@ public:
 private:
 	DRAW_TYPE m_drawtype;
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
-	D3DXVECTOR2 m_pos;
+	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_rot;
 	D3DXVECTOR3 m_move;
 	int m_width;

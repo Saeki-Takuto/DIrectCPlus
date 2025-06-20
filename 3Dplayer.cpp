@@ -400,6 +400,27 @@ void C3DPlayer::Update(void)
 		m_rotDest.y = CamRot.y - D3DX_PI * 0.5f;
 	}
 
+	//Object3Dを取得
+	CObject3D* pObject3D = CManager::GetObject3D();
+
+
+	// 現在座標の地面の高さを取得
+	float groundY = 0.0f;
+	if (pObject3D) {
+		groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+	}
+
+	// ジャンプ処理
+	if (pInputKeyboard->Trigger(DIK_SPACE) == true)
+	{
+		// 地面またはobject3Dの上にいるときだけジャンプ可能
+		if (!m_bJump && fabs(m_pos.y - groundY) < 0.15f)
+		{
+			m_move.y += 4.0f;
+			m_bJump = true;
+		}
+	}
+
 	if (m_rotDest.y - m_rot.y >= D3DX_PI)
 	{
 		m_rot.y += D3DX_PI * 2;
@@ -417,6 +438,16 @@ void C3DPlayer::Update(void)
 	m_move.x += (0.0f - m_move.x) * 0.17f;
 	m_move.z += (0.0f - m_move.z) * 0.17f;
 
+
+	m_move.y -= 0.1f;
+
+	// 着地判定
+	if (m_pos.y <= groundY + 0.05f)
+	{
+		m_pos.y = groundY;
+		m_move.y = 0.0f;
+		m_bJump = false;
+	}
 	//モデルの解放
 	for (int nCnt = 0; nCnt < MAX_PARTS; nCnt++)
 	{
@@ -452,11 +483,9 @@ void C3DPlayer::Update(void)
 		}
 	}
 
-	//Object3Dを取得
-	CObject3D* pObject3D = CManager::GetObject3D();
 
-	//プレイヤーがobject3Dの内側にいるとき
-	m_pos.y = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+	////プレイヤーがobject3Dの内側にいるとき
+	//m_pos.y = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
 }
 
 //================================================
@@ -516,9 +545,19 @@ C3DPlayer* C3DPlayer::Create()
 //================================================
 
 
-D3DXVECTOR2 C3DPlayer::GetPos(void)
+D3DXVECTOR3 C3DPlayer::GetPos(void)
 {
-	return D3DXVECTOR2();
+	return m_pos;
+}
+
+D3DXVECTOR3 C3DPlayer::GetRot(void)
+{
+	return m_rot;
+}
+
+D3DXVECTOR3 C3DPlayer::GetMove(void)
+{
+	return m_move;
 }
 
 int C3DPlayer::GetWidth(void)

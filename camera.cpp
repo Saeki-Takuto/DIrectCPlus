@@ -1,9 +1,11 @@
 #include "camera.h"
 #include "renderer.h"
 #include "manager.h"
+#include "3Dplayer.h"
 
 CCamera::CCamera()
 {
+
 }
 
 CCamera::~CCamera()
@@ -34,6 +36,17 @@ void CCamera::Update(void)
 {
 	CInputKeyboard* pInputKeyboard;
 	pInputKeyboard = CManager::GetInputKeyboard();
+
+	//プレイヤーの取得
+	C3DPlayer* p3DPlayer = CManager::Get3DPlayer();
+
+	if (!p3DPlayer) return;
+
+	D3DXVECTOR3 playerPos = p3DPlayer->GetPos();
+
+	// プレイヤーの少し後ろ上から見る
+	m_posR = playerPos;
+	m_posV = playerPos + D3DXVECTOR3(0.0f, 100.0f, -200.0f);
 
 	//カメラの移動
 	if (pInputKeyboard->Repeat(DIK_W) == true)
@@ -184,7 +197,4 @@ void CCamera::SetCamera(void)
 
 	//プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
-
-
-	
 }

@@ -46,6 +46,7 @@ public:
         int animePattern,
         float posX,
         float posY,
+        float posZ,
         float rotZ
     );
     HRESULT Init(void);

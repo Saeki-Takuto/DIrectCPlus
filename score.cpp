@@ -79,7 +79,7 @@ void CScore::Draw(void)
 //================================================
 //¶¬ˆ—
 //================================================
-CScore* CScore::Create(SCORE_TYPE scoreType, int digit, int value, const D3DXVECTOR2& center, float width, float height, float spacing)
+CScore* CScore::Create(SCORE_TYPE scoreType, int digit, int value, const D3DXVECTOR3& center, float width, float height, float spacing)
 {
 	CScore* pScore = new CScore(SCORE_PRIORITY);
 	pScore->SetScoreType(scoreType);

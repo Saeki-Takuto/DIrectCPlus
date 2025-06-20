@@ -24,6 +24,8 @@
 #include "debugproc.h"
 #include "camera.h"
 #include "light.h"
+#include "3Dplayer.h"
+#include "wall.h"
 
 //================================================
 //ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
@@ -54,13 +56,16 @@ public:
 	static CCamera* GetCamera(void);
 	static CLight* GetLight(void);
 	static CObject3D* GetObject3D(void);
-
+	static C3DPlayer* Get3DPlayer(void);
+	static CWall* GetWall(void);
 
 private:
 	static CRenderer* m_pRenderer;
 	static CInputKeyboard* m_pInputKeyboard;
 	static CPlayer* m_pPlayer;
 	static CObject3D* m_pObject3D;
+	static C3DPlayer* m_p3DPlayer;
+	static CWall* m_pWall;
 
 	static CCamera* m_pCamera;
 	static CLight* m_pLight;

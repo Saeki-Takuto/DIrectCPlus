@@ -62,7 +62,7 @@ void CPlayer::Update(void)
 	pInputKeyboard = CManager::GetInputKeyboard();
 
 
-	D3DXVECTOR2 pos = GetPos();
+	D3DXVECTOR3 pos = GetPos();
 	D3DXVECTOR3 rot = GetRot();
 
 	if (pInputKeyboard->Repeat(DIK_W))
@@ -102,6 +102,7 @@ void CPlayer::Update(void)
 			1, 1, 0,
 			pos.x,
 			pos.y,
+			pos.z,
 			rot.z,
 			10.0f,
 			100
@@ -122,7 +123,7 @@ void CPlayer::Draw(void)
 //================================================
 //¶¬ˆ—
 //================================================
-CPlayer* CPlayer::Create(DRAW_TYPE drawtype, int width, int height, float scrollX, float scrollY, int animeFrameU, int animeFrameV, int animePattern, float posX, float posY, float rotZ)
+CPlayer* CPlayer::Create(DRAW_TYPE drawtype, int width, int height, float scrollX, float scrollY, int animeFrameU, int animeFrameV, int animePattern, float posX, float posY,float posZ, float rotZ)
 {
 	CPlayer* pPlayer = new CPlayer(PLAYER_PRIORITY);
 	pPlayer->SetDrawType(drawtype);
@@ -131,7 +132,7 @@ CPlayer* CPlayer::Create(DRAW_TYPE drawtype, int width, int height, float scroll
 	pPlayer->SetAnimeFrameU(animeFrameU);
 	pPlayer->SetAnimeFrameV(animeFrameV);
 	pPlayer->SetAnimePattern(animePattern);
-	pPlayer->SetPos(D3DXVECTOR2(posX, posY));
+	pPlayer->SetPos(D3DXVECTOR3(posX, posY,posZ));
 	D3DXVECTOR3 rot = pPlayer->GetRot();
 	rot.z = rotZ;
 	pPlayer->SetRot(rot);

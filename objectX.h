@@ -33,7 +33,7 @@ public:
 
 	static CObjectX* Create(void);
 
-	D3DXVECTOR2 GetPos(void) override;
+	D3DXVECTOR3 GetPos(void) override;
 	int GetWidth(void) override;
 	int GetHeight(void) override;
 

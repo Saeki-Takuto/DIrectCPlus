@@ -54,24 +54,24 @@ public:
 	void Create(
 		int digit,
 		int value,
-		const D3DXVECTOR2& center,
+		const D3DXVECTOR3& center,
 		LPDIRECT3DTEXTURE9 tex,
 		float width,      // åÖÇÃïù
 		float height,     // åÖÇÃçÇÇ≥
 		float spacing     // åÖÇÃä‘äu
 	);
 
-	D3DXVECTOR2 GetPos(void) const { return m_pos; }
+	D3DXVECTOR3 GetPos(void) const { return m_pos; }
 	int GetWidth(void) override { return m_width; }
 	int GetHeight(void) override { return m_height; }
-	D3DXVECTOR2 GetPos(void) override { return m_pos; }
+	D3DXVECTOR3 GetPos(void) override { return m_pos; }
 	int GetSpacing(void) const { return m_spacing; }
 	int GetDigit(void) const { return m_digit; }
 	int GetValue(void) const { return m_value; }
 	LPDIRECT3DTEXTURE9 GetTexture() const { return m_pTexture; }
 	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff() const { return m_pVtxBuff; }
 
-	void SetPos(const D3DXVECTOR2& pos) { m_pos = pos; }
+	void SetPos(const D3DXVECTOR3& pos) { m_pos = pos; }
 	void SetWidth(int width) { m_width = width; }
 	void SetHeight(int height) { m_height = height; }
 	void SetSpacing(int spacing) { m_spacing = spacing; }
@@ -83,7 +83,7 @@ public:
 
 private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
-	D3DXVECTOR2 m_pos;
+	D3DXVECTOR3 m_pos;
 	int m_width;
 	int m_height;
 	int m_spacing;

@@ -70,7 +70,7 @@ void CBackground::Draw(void)
 //================================================
 //¶¬ˆ—
 //================================================
-CBackground* CBackground::Create(BACKGROUND_TYPE backgroundtype, DRAW_TYPE drawtype, int width, int height, float scrollX, float scrollY, int animeFrameU, int animeFrameV, int animePattern, float posX, float posY, float rotZ)
+CBackground* CBackground::Create(BACKGROUND_TYPE backgroundtype, DRAW_TYPE drawtype, int width, int height, float scrollX, float scrollY, int animeFrameU, int animeFrameV, int animePattern, float posX, float posY, float posZ,float rotZ)
 {
 	CBackground* pBackground = new CBackground(BACKGROUND_PRIORITY);
 	pBackground->SetDrawType(drawtype);
@@ -81,7 +81,7 @@ CBackground* CBackground::Create(BACKGROUND_TYPE backgroundtype, DRAW_TYPE drawt
 	pBackground->SetAnimeFrameU(animeFrameU);
 	pBackground->SetAnimeFrameV(animeFrameV);
 	pBackground->SetAnimePattern(animePattern);
-	pBackground->SetPos(D3DXVECTOR2(posX, posY));
+	pBackground->SetPos(D3DXVECTOR3(posX, posY,posZ));
 	D3DXVECTOR3 rot = pBackground->GetRot();
 	rot.z = rotZ;
 	pBackground->SetRot(rot);

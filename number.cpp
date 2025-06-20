@@ -165,7 +165,7 @@ void CNumber::BindTexture(LPDIRECT3DTEXTURE9 pTexture)
 void CNumber::Create(
 	int digit,
 	int value,
-	const D3DXVECTOR2& center,
+	const D3DXVECTOR3& center,
 	LPDIRECT3DTEXTURE9 tex,
 	float width,
 	float height,

@@ -93,6 +93,7 @@ CExplosion* CExplosion::Create(
     int animePattern,
     float posX,
     float posY,
+    float posZ,
     float rotZ
 )
 {
@@ -103,7 +104,7 @@ CExplosion* CExplosion::Create(
     pExplosion->SetAnimeFrameU(animeFrameU);
     pExplosion->SetAnimeFrameV(animeFrameV);
     pExplosion->SetAnimePattern(animePattern);
-    pExplosion->SetPos(D3DXVECTOR2(posX, posY));
+    pExplosion->SetPos(D3DXVECTOR3(posX, posY,posZ));
     D3DXVECTOR3 rot = pExplosion->GetRot();
     rot.z = rotZ;
     pExplosion->SetRot(rot);

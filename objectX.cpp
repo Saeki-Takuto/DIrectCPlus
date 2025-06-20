@@ -200,9 +200,9 @@ CObjectX* CObjectX::Create(void)
 	return pObjectX;
 }
 
-D3DXVECTOR2 CObjectX::GetPos(void)
+D3DXVECTOR3 CObjectX::GetPos(void)
 {
-	return D3DXVECTOR2();
+	return D3DXVECTOR3();
 }
 
 int CObjectX::GetWidth(void)

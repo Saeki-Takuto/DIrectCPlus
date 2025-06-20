@@ -234,6 +234,7 @@ CObject2D* CObject2D::Create(
 	int animePattern,
 	float posX,
 	float posY,
+	float posZ,
 	float rotZ
 )
 {
@@ -248,7 +249,7 @@ CObject2D* CObject2D::Create(
 	pObject2D->m_animeFrameU = animeFrameU;
 	pObject2D->m_animeFrameV = animeFrameV;
 	pObject2D->m_animePattern = animePattern;
-	pObject2D->m_pos = D3DXVECTOR2(posX, posY);
+	pObject2D->m_pos = D3DXVECTOR3(posX, posY,posZ);
 	pObject2D->m_rot.z = rotZ;
 	pObject2D->Init();
 	return pObject2D;

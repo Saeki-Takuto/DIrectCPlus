@@ -43,7 +43,7 @@ public:
 		SCORE_TYPE scoreType,
 		int digit,          // 桁数
 		int value,
-		const D3DXVECTOR2& center,
+		const D3DXVECTOR3& center,
 		float width = 30.0f,      // 桁の幅
 		float height = 50.0f,     // 桁の高さ
 		float spacing = 4.0f       // 桁間のスペース

@@ -66,7 +66,7 @@ void CEffect::Update(void)
         return;
     }
 
-    D3DXVECTOR2 pos = GetPos();
+    D3DXVECTOR3 pos = GetPos();
     D3DXVECTOR3 move = GetMove();
 
     pos.x += move.x;
@@ -112,6 +112,7 @@ CEffect* CEffect::Create(
     int animePattern,
     float posX,
     float posY,
+    float posZ,
     float rotZ,
     float speed,
     int nLife
@@ -124,7 +125,7 @@ CEffect* CEffect::Create(
     pEffect->SetAnimeFrameU(animeFrameU);
     pEffect->SetAnimeFrameV(animeFrameV);
     pEffect->SetAnimePattern(animePattern);
-    pEffect->SetPos(D3DXVECTOR2(posX, posY));
+    pEffect->SetPos(D3DXVECTOR3(posX, posY,posZ));
     D3DXVECTOR3 rot = pEffect->GetRot();
     rot.z = rotZ;
     pEffect->SetRot(rot);

@@ -1,11 +1,11 @@
 //==================================================================
 //
-//ビルボード処理 [billboard.h]
+//オブジェクト2D処理 [object2D.h]
 //Author:Takuto Saeki
 //
 //==================================================================
-#ifndef _BILLBOARD_H_					//このマクロ定義がされてなかったら
-#define _BILLBOARD_H_					//2重インクルード防止のマクロ定義
+#ifndef _WALL_H_					//このマクロ定義がされてなかったら
+#define _WALL_H_					//2重インクルード防止のマクロ定義
 
 //================================================
 //インクルード
@@ -16,27 +16,22 @@
 //================================================
 //マクロ定義
 //================================================
-#define BILL_SIZE (15.0f)
+#define WALL_WIDTH (150)
+#define WALL_HEIGHT (700)
 
 //================================================
 //クラス
 //================================================
-class CBillboard :public CObject
+class CWall :public CObject
 {
 public:
-	CBillboard();
-	~CBillboard();
+	CWall();
+	~CWall();
 
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-
-	static CBillboard* Create(void);
-
-	D3DXVECTOR3 GetPos(void) override;
-	int GetWidth(void) override;
-	int GetHeight(void) override;
 
 	typedef struct
 	{
@@ -46,17 +41,19 @@ public:
 		D3DXVECTOR2 tex;//テクスチャ座標
 	}VERTEX_3D;
 
+	static CWall* Create(void);
+	D3DXVECTOR3 GetPos(void) override;
+	int GetWidth(void) override;
+	int GetHeight(void) override;
+
+	float GetHeightMesh(float posx, float posz);
+
 private:
-	LPDIRECT3DTEXTURE9 m_pTexture;
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
-
-	//LPD3DXMESH m_pMesh;
-	//LPD3DXBUFFER m_pBuffMat;
-	//DWORD m_dwNumMat;
-
-	D3DXMATRIX m_mtxWorld;
-	D3DXVECTOR3 m_pos;
-	D3DXVECTOR3 m_rot;
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuffPolygon = NULL;//頂点バッファへのポインタ
+	LPDIRECT3DTEXTURE9 m_pTexturePolygon = NULL;		//テクスチャへのポインタ
+	D3DXVECTOR3 m_posPolygon;//位置
+	D3DXVECTOR3 m_rotPolygon;//向き
+	D3DXMATRIX m_mtxWorldPolygon;//ワールドマトリックス
 };
 
 #endif

@@ -37,6 +37,7 @@ public:
         int animePattern,
         float posX,
         float posY,
+		float posZ,
         float rotZ,
         float speed,
         int nLife
@@ -45,7 +46,7 @@ public:
     void Uninit(void);
     void Update(void);
     void Draw(void);
-    bool CollisionEnemy(D3DXVECTOR2 pos);
+    bool CollisionEnemy(D3DXVECTOR3 pos);
 
     static HRESULT Load(void);
     static void Unload(void);

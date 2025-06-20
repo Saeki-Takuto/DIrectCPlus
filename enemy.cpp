@@ -71,7 +71,7 @@ void CEnemy::Draw(void)
 //================================================
 //¶¬ˆ—
 //================================================
-CEnemy* CEnemy::Create(ENEMY_TYPE enemytype, DRAW_TYPE drawtype, int width, int height, float scrollX, float scrollY, int animeFrameU, int animeFrameV, int animePattern, float posX, float posY, float rotZ)
+CEnemy* CEnemy::Create(ENEMY_TYPE enemytype, DRAW_TYPE drawtype, int width, int height, float scrollX, float scrollY, int animeFrameU, int animeFrameV, int animePattern, float posX, float posY,float posZ, float rotZ)
 {
 	CEnemy* pEnemy = new CEnemy(ENEMY_PRIORITY);
 	pEnemy->SetEnemyType(enemytype);
@@ -81,7 +81,7 @@ CEnemy* CEnemy::Create(ENEMY_TYPE enemytype, DRAW_TYPE drawtype, int width, int 
 	pEnemy->SetAnimeFrameU(animeFrameU);
 	pEnemy->SetAnimeFrameV(animeFrameV);
 	pEnemy->SetAnimePattern(animePattern);
-	pEnemy->SetPos(D3DXVECTOR2(posX, posY));
+	pEnemy->SetPos(D3DXVECTOR3(posX, posY,posZ));
 	D3DXVECTOR3 rot = pEnemy->GetRot();
 	rot.z = rotZ;
 	pEnemy->SetRot(rot);

@@ -37,6 +37,7 @@ public:
         int animePattern,
         float posX,
         float posY,
+        float posZ,
         float rotZ,
         float speed,
         int nLife

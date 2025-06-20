@@ -164,9 +164,9 @@ CBillboard* CBillboard::Create(void)
 	return pBillboard;
 }
 
-D3DXVECTOR2 CBillboard::GetPos(void)
+D3DXVECTOR3 CBillboard::GetPos(void)
 {
-	return D3DXVECTOR2();
+	return D3DXVECTOR3();
 }
 
 int CBillboard::GetWidth(void)
