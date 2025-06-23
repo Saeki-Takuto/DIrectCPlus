@@ -16,6 +16,7 @@
 #include "objectX.h"
 #include "billboard.h"
 #include "3Dplayer.h"
+#include "rock.h"
 
 //================================================
 //ê√ìI
@@ -95,6 +96,7 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	CBackground::Load();
 	CScore::Load();
 	CEffect::Load();
+	CRock::Load();
 
 	CObject3D::Create();
 
@@ -161,6 +163,10 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	CBillboard::Create();
 
 	//CObjectX::Create();
+	CRock::Create(40, 10, 150);
+	//CRock::Create(-40, 50, 150);
+	//CRock::Create(40, 90, 150);
+	//CRock::Create(-40, 130, 150);
 
 	m_p3DPlayer = C3DPlayer::Create();
 
@@ -200,6 +206,7 @@ void CManager::Uninit(void)
 	CBullet::Unload();
 	CPlayer::Unload();
 	CScore::Unload();
+	CRock::Unload();
 }
 
 //================================================

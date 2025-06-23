@@ -16,15 +16,17 @@ HRESULT CObjectX::Init(void)
 	CRenderer* renderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = renderer->GetDevice();
 
-	//Xファイルの読み込み
-	D3DXLoadMeshFromX("data/MODEL/vending.x",
-		D3DXMESH_SYSTEMMEM,
-		pDevice,
-		NULL,
-		&m_pBuffMat,
-		NULL,
-		&m_dwNumMat,
-		&m_pMesh);
+	CObjectX::BindX(m_pBuffMat, m_dwNumMat, m_pMesh);
+
+	////Xファイルの読み込み
+	//D3DXLoadMeshFromX("data/MODEL/privacy.x",
+	//	D3DXMESH_SYSTEMMEM,
+	//	pDevice,
+	//	NULL,
+	//	&m_pBuffMat,
+	//	NULL,
+	//	&m_dwNumMat,
+	//	&m_pMesh);
 
 	D3DXMATERIAL* pMat;//マテリアルへのポインタ
 
@@ -53,7 +55,6 @@ void CObjectX::Uninit(void)
 		m_pMesh->Release();
 		m_pMesh = NULL;
 	}
-
 	//頂点バッファの解放
 	if (m_pBuffMat != NULL)
 	{
@@ -74,56 +75,56 @@ void CObjectX::Uninit(void)
 
 void CObjectX::Update(void)
 {
-	CInputKeyboard* pInputKeyboard;
-	pInputKeyboard = CManager::GetInputKeyboard();
-	D3DXVECTOR3 CamRot;
-	//カメラの取得
-	CCamera* pCamera = CManager::GetCamera();
+	//CInputKeyboard* pInputKeyboard;
+	//pInputKeyboard = CManager::GetInputKeyboard();
+	//D3DXVECTOR3 CamRot;
+	////カメラの取得
+	//CCamera* pCamera = CManager::GetCamera();
 
-	CamRot = pCamera->GetRot();
+	//CamRot = pCamera->GetRot();
 
-	if (pInputKeyboard->Repeat(DIK_DOWN) == true)
-	{
-		m_move.x += sinf(CamRot.y);
-		m_move.z += cosf(CamRot.y);
-		m_rotDest.y = CamRot.y - D3DX_PI;
-	}
-	else if (pInputKeyboard->Repeat(DIK_UP) == true)
-	{
-		m_move.x -= sinf(CamRot.y);
-		m_move.z -= cosf(CamRot.y);
-		m_rotDest.y = CamRot.y;
+	//if (pInputKeyboard->Repeat(DIK_DOWN) == true)
+	//{
+	//	m_move.x += sinf(CamRot.y);
+	//	m_move.z += cosf(CamRot.y);
+	//	m_rotDest.y = CamRot.y - D3DX_PI;
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_UP) == true)
+	//{
+	//	m_move.x -= sinf(CamRot.y);
+	//	m_move.z -= cosf(CamRot.y);
+	//	m_rotDest.y = CamRot.y;
 
-	}
-	else if (pInputKeyboard->Repeat(DIK_RIGHT) == true)
-	{
-		m_move.z += sinf(CamRot.y);
-		m_move.x -= cosf(CamRot.y);
-		m_rotDest.y = CamRot.y + D3DX_PI * 0.5f;
-	}
-	else if (pInputKeyboard->Repeat(DIK_LEFT) == true)
-	{
-		m_move.z -= sinf(CamRot.y);
-		m_move.x += cosf(CamRot.y);
-		m_rotDest.y = CamRot.y - D3DX_PI * 0.5f;
-	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_RIGHT) == true)
+	//{
+	//	m_move.z += sinf(CamRot.y);
+	//	m_move.x -= cosf(CamRot.y);
+	//	m_rotDest.y = CamRot.y + D3DX_PI * 0.5f;
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_LEFT) == true)
+	//{
+	//	m_move.z -= sinf(CamRot.y);
+	//	m_move.x += cosf(CamRot.y);
+	//	m_rotDest.y = CamRot.y - D3DX_PI * 0.5f;
+	//}
 
-	if (m_rotDest.y - m_rot.y >= D3DX_PI)
-	{
-		m_rot.y += D3DX_PI * 2;
-	}
-	else if (m_rotDest.y - m_rot.y <= -D3DX_PI)
-	{
-		m_rot.y -= D3DX_PI * 2;
-	}
+	//if (m_rotDest.y - m_rot.y >= D3DX_PI)
+	//{
+	//	m_rot.y += D3DX_PI * 2;
+	//}
+	//else if (m_rotDest.y - m_rot.y <= -D3DX_PI)
+	//{
+	//	m_rot.y -= D3DX_PI * 2;
+	//}
 
-	m_rot.y += (m_rotDest.y - m_rot.y) * 0.1f;
+	//m_rot.y += (m_rotDest.y - m_rot.y) * 0.1f;
 
-	m_pos += m_move;
+	//m_pos += m_move;
 
-	//移動量を更新(減衰させる)
-	m_move.x += (0.0f - m_move.x) * 0.17f;
-	m_move.z += (0.0f - m_move.z) * 0.17f;
+	////移動量を更新(減衰させる)
+	//m_move.x += (0.0f - m_move.x) * 0.17f;
+	//m_move.z += (0.0f - m_move.z) * 0.17f;
 }
 
 void CObjectX::Draw(void)
@@ -192,6 +193,13 @@ void CObjectX::Draw(void)
 	pDevice->SetRenderState(D3DRS_DESTBLEND, oldDestBlend);
 }
 
+void CObjectX::BindX(LPD3DXBUFFER pBuffMat, DWORD dwNumMat, LPD3DXMESH pMesh)
+{
+	m_pBuffMat = pBuffMat;
+	m_dwNumMat = dwNumMat;
+	m_pMesh = pMesh;
+}
+
 CObjectX* CObjectX::Create(void)
 {
 	CObjectX* pObjectX = new CObjectX;
@@ -202,7 +210,7 @@ CObjectX* CObjectX::Create(void)
 
 D3DXVECTOR3 CObjectX::GetPos(void)
 {
-	return D3DXVECTOR3();
+	return m_pos;
 }
 
 int CObjectX::GetWidth(void)
@@ -214,3 +222,11 @@ int CObjectX::GetHeight(void)
 {
 	return 0;
 }
+
+void CObjectX::SetPos(float X, float Y, float Z)
+{
+	m_pos.x = X;
+	m_pos.y = Y;
+	m_pos.z = Z;
+}
+

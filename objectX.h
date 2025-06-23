@@ -30,12 +30,14 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void BindX(LPD3DXBUFFER pBuffMat, DWORD dwNumMat, LPD3DXMESH pMesh);
 
 	static CObjectX* Create(void);
 
 	D3DXVECTOR3 GetPos(void) override;
 	int GetWidth(void) override;
 	int GetHeight(void) override;
+	void SetPos(float X,float Y,float Z);
 
 private:
 	LPDIRECT3DTEXTURE9 m_apTexture[128];
