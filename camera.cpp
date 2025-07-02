@@ -17,10 +17,15 @@ HRESULT CCamera::Init(void)
 	m_posV = D3DXVECTOR3(0.0f, 100.0f, -200.0f);
 	m_posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_rot = D3DXVECTOR3(0.0f, -2.50f, 0.0f);
 
 	float fDisX = m_posV.x - m_posR.x;
 	float fDisZ = m_posV.z - m_posR.z;
+
+	if (m_rot.y > D3DX_PI)
+	{
+		m_rot.y -= D3DX_PI * 2;
+	}
 
 
 	m_Distance = sqrtf((fDisX * fDisX) + (fDisZ * fDisZ));
@@ -45,7 +50,7 @@ void CCamera::Update(void)
 	D3DXVECTOR3 playerPos = p3DPlayer->GetPos();
 
 	// プレイヤーの少し後ろ上から見る
-	m_posR = playerPos;
+	m_posR = playerPos + D3DXVECTOR3(0.0f, 50.0f, 0.0f);
 	m_posV = playerPos + D3DXVECTOR3(0.0f, 100.0f, -200.0f);
 
 	//カメラの移動

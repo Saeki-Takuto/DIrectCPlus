@@ -111,44 +111,44 @@ void CWall::Uninit(void)
 
 void CWall::Update(void)
 {
-	CInputKeyboard* pInputKeyboard;
-	pInputKeyboard = CManager::GetInputKeyboard();
+	//CInputKeyboard* pInputKeyboard;
+	//pInputKeyboard = CManager::GetInputKeyboard();
 
-	if (pInputKeyboard->Repeat(DIK_5) == true)
-	{
-		m_posPolygon.x += 10.0f;
-	}
+	//if (pInputKeyboard->Repeat(DIK_5) == true)
+	//{
+	//	m_posPolygon.x += 10.0f;
+	//}
 
-	VERTEX_3D* pVtx = NULL;
-	//頂点バッファをロック
-	m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
+	//VERTEX_3D* pVtx = NULL;
+	////頂点バッファをロック
+	//m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 
-	//頂点座標を設定
-	pVtx[0].pos = D3DXVECTOR3(-WALL_WIDTH, +WALL_HEIGHT, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(+WALL_WIDTH, +WALL_HEIGHT, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(-WALL_WIDTH, -WALL_HEIGHT, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(+WALL_WIDTH, -WALL_HEIGHT, 0.0f);
+	////頂点座標を設定
+	//pVtx[0].pos = D3DXVECTOR3(-WALL_WIDTH, +WALL_HEIGHT, 0.0f);
+	//pVtx[1].pos = D3DXVECTOR3(+WALL_WIDTH, +WALL_HEIGHT, 0.0f);
+	//pVtx[2].pos = D3DXVECTOR3(-WALL_WIDTH, -WALL_HEIGHT, 0.0f);
+	//pVtx[3].pos = D3DXVECTOR3(+WALL_WIDTH, -WALL_HEIGHT, 0.0f);
 
-	//各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
-	pVtx[0].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
-	pVtx[1].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
-	pVtx[2].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
-	pVtx[3].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
+	////各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
+	//pVtx[0].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
+	//pVtx[1].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
+	//pVtx[2].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
+	//pVtx[3].nor = D3DXVECTOR3(0.0, 1.0, 0.0);
 
-	//頂点カラーの設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	////頂点カラーの設定
+	//pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	//pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
-	////テクスチャ座標の設定
-	//pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	//pVtx[1].tex = D3DXVECTOR2(5.0f, 0.0f);
-	//pVtx[2].tex = D3DXVECTOR2(0.0f, 5.0f);
-	//pVtx[3].tex = D3DXVECTOR2(5.0f, 5.0f);
+	//////テクスチャ座標の設定
+	////pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	////pVtx[1].tex = D3DXVECTOR2(5.0f, 0.0f);
+	////pVtx[2].tex = D3DXVECTOR2(0.0f, 5.0f);
+	////pVtx[3].tex = D3DXVECTOR2(5.0f, 5.0f);
 
-	//頂点バッファのアンロック
-	m_pVtxBuffPolygon->Unlock();
+	////頂点バッファのアンロック
+	//m_pVtxBuffPolygon->Unlock();
 
 
 }

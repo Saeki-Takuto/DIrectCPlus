@@ -16,7 +16,6 @@
 #include "objectX.h"
 #include "billboard.h"
 #include "3Dplayer.h"
-#include "rock.h"
 
 //================================================
 //静的
@@ -29,6 +28,7 @@ CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
 C3DPlayer* CManager::m_p3DPlayer = NULL;
 CWall* CManager::m_pWall = NULL;
+CRock* CManager::m_pRock = NULL;
 
 //================================================
 //コンストラクタ
@@ -163,10 +163,10 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	CBillboard::Create();
 
 	//CObjectX::Create();
-	CRock::Create(40, 10, 150);
-	//CRock::Create(-40, 50, 150);
-	//CRock::Create(40, 90, 150);
-	//CRock::Create(-40, 130, 150);
+	m_pRock=CRock::Create(40, 10, 150);
+	m_pRock = CRock::Create(-40, 50, 150);
+	m_pRock = CRock::Create(40, 90, 150);
+	m_pRock = CRock::Create(-40, 130, 150);
 
 	m_p3DPlayer = C3DPlayer::Create();
 
@@ -287,4 +287,9 @@ C3DPlayer* CManager::Get3DPlayer(void)
 CWall* CManager::GetWall(void)
 {
 	return m_pWall;
+}
+
+CRock* CManager::GetRock(void)
+{
+	return m_pRock;
 }

@@ -402,7 +402,8 @@ void C3DPlayer::Update(void)
 
 	//Object3Dを取得
 	CObject3D* pObject3D = CManager::GetObject3D();
-
+	//rockを取得
+	CRock* pObjectRock = CManager::GetRock();
 
 	// 現在座標の地面の高さを取得
 	float groundY = 0.0f;
@@ -410,16 +411,47 @@ void C3DPlayer::Update(void)
 		groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
 	}
 
+	float rockY = 0.0f;
+	if (pObjectRock) {
+		rockY = pObjectRock->GetHeight(m_pos.x, m_pos.z);
+	}
+
+	// 足場の高さを決定（地面と岩のうち高い方）
+	float platformY = (groundY > rockY) ? groundY : rockY;
+
+	//// 現在座標の地面の高さを取得
+	//float groundY = 0.0f;
+	//if (pObject3D) {
+	//	groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+	//}
+
+	//float rockY = 0.0f;
+	//if (pObjectRock) {
+	//	rockY = pObjectRock->GetHeight(m_pos.x, m_pos.z);
+	//}
+
+	//// ジャンプ処理
+	//if (pInputKeyboard->Trigger(DIK_SPACE) == true)
+	//{
+	//	// 地面またはobject3Dの上にいるときだけジャンプ可能
+	//	if (!m_bJump && fabs(m_pos.y - groundY) < 0.15f)
+	//	{
+	//		m_move.y += 4.0f;
+	//		m_bJump = true;
+	//	}
+	//}
+
 	// ジャンプ処理
 	if (pInputKeyboard->Trigger(DIK_SPACE) == true)
 	{
-		// 地面またはobject3Dの上にいるときだけジャンプ可能
-		if (!m_bJump && fabs(m_pos.y - groundY) < 0.15f)
+		// 足場の上にいるときだけジャンプ可能
+		if (!m_bJump && fabs(m_pos.y - platformY) < 0.15f)
 		{
 			m_move.y += 4.0f;
 			m_bJump = true;
 		}
 	}
+
 
 	if (m_rotDest.y - m_rot.y >= D3DX_PI)
 	{
@@ -441,10 +473,18 @@ void C3DPlayer::Update(void)
 
 	m_move.y -= 0.1f;
 
+	//// 着地判定
+	//if (m_pos.y <= groundY + 0.05f)
+	//{
+	//	m_pos.y = groundY;
+	//	m_move.y = 0.0f;
+	//	m_bJump = false;
+	//}
+
 	// 着地判定
-	if (m_pos.y <= groundY + 0.05f)
+	if (m_pos.y <= platformY + 0.05f)
 	{
-		m_pos.y = groundY;
+		m_pos.y = platformY;
 		m_move.y = 0.0f;
 		m_bJump = false;
 	}

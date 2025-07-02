@@ -26,6 +26,7 @@
 #include "light.h"
 #include "3Dplayer.h"
 #include "wall.h"
+#include "rock.h"
 
 //================================================
 //ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
@@ -58,6 +59,8 @@ public:
 	static CObject3D* GetObject3D(void);
 	static C3DPlayer* Get3DPlayer(void);
 	static CWall* GetWall(void);
+	static CRock* GetRock(void);
+
 
 private:
 	static CRenderer* m_pRenderer;
@@ -66,6 +69,7 @@ private:
 	static CObject3D* m_pObject3D;
 	static C3DPlayer* m_p3DPlayer;
 	static CWall* m_pWall;
+	static CRock* m_pRock;
 
 	static CCamera* m_pCamera;
 	static CLight* m_pLight;
