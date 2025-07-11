@@ -97,13 +97,6 @@ void CRock::Draw(void)
 	CObjectX::Draw();
 }
 
-//CRock* CRock::Create()
-//{
-//	CRock* pRock = new CRock();
-//	pRock->BindX(m_pBuffMat, m_dwNumMat, m_pMesh);
-//	pRock->Init();
-//	return pRock;
-//}
 
 CRock* CRock::Create(float X, float Y, float Z)
 {

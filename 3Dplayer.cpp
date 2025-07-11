@@ -536,11 +536,71 @@ void C3DPlayer::Draw(void)
 	// デバイスの取得
 	CRenderer* renderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = renderer->GetDevice();
+
+	LPDIRECT3DSURFACE9 pRenderDef, pZBuffDef;
+	D3DVIEWPORT9 viewportDef;
+	D3DXMATRIX mtxViewDef, mtxProjectionDef;
+
+	//現在のレンダリングターゲットを取得(保存)
+	pDevice->GetRenderTarget(0, &pRenderDef);
+
+	//現在のZバッファを取得(保存)
+	pDevice->GetDepthStencilSurface(&pZBuffDef);
+
+	//現在のビューポートを取得(保存)
+	pDevice->GetViewport(&viewportDef);
+
+	//現在のビューマトリックスを取得
+	pDevice->GetTransform(D3DTS_VIEW, &mtxViewDef);
+
+	//現在のプロジェクションマトリックスを取得(保存)
+	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjectionDef);
+
+
+
+	// プレイヤーの後方上空からプレイヤーを見るカメラ
+	//D3DXVECTOR3 posV = m_pos + D3DXVECTOR3(-sinf(m_rot.y) * 200.0f, 100.0f, -cosf(m_rot.y) * 200.0f); // カメラ位置
+	//D3DXVECTOR3 posR = m_pos; // 注視点（プレイヤーの位置）
+	//D3DXVECTOR3 vecU = D3DXVECTOR3(0, 1, 0); // 上方向
+
+	D3DXVECTOR3 posV = D3DXVECTOR3(0.0f, 100.0f, -200.0f);
+	D3DXVECTOR3 posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+	CManager::GetRenderer()->ChangeTarget(posV, posR, vecU);
+
+	//レンダリングターゲット用のテクスチャのクリア
+// 3DPlayer::Draw()の最初で
+	pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(255, 0, 0, 255), 1.0f, 0);
+
 	D3DXMATRIX mtxRot, mtxTrans;//計算用マトリックス
 	D3DMATERIAL9 matDef;//現在のマテリアル保存用
 	D3DXMATERIAL* pMat;//マテリアルデータへのポインタ
 
-	// ワールドマトリックスの初期化
+	//// ワールドマトリックスの初期化
+	//D3DXMatrixIdentity(&m_mtxWorld);
+
+	////向きを反映
+	//D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	//D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+
+	////位置を反映
+	//D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+	//D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	////ワールドマトリックスの設定
+	//pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	//// 各モデルの描画
+	//for (int nCnt = 0; nCnt < MAX_PARTS; nCnt++)
+	//{
+	//	if (m_apModel[nCnt] != nullptr)
+	//	{
+	//		m_apModel[nCnt]->Draw();
+	//	}
+	//}
+
+	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	//向きを反映
@@ -562,6 +622,41 @@ void C3DPlayer::Draw(void)
 			m_apModel[nCnt]->Draw();
 		}
 	}
+
+	//レンダリングターゲットを元に戻す
+	pDevice->SetRenderTarget(0, pRenderDef);
+	//Zバッファを元に戻す
+	pDevice->SetDepthStencilSurface(pZBuffDef);
+	//ビューポートを元に戻す
+	pDevice->SetViewport(&viewportDef);
+	//ビューマトリックスを元に戻す
+	pDevice->SetTransform(D3DTS_VIEW, &mtxViewDef);
+	//プロジェクションマトリックスを元に戻す
+	pDevice->SetTransform(D3DTS_PROJECTION, &mtxProjectionDef);
+
+	//ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	//向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+
+	//位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	//ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	// 各モデルの描画
+	for (int nCnt = 0; nCnt < MAX_PARTS; nCnt++)
+	{
+		if (m_apModel[nCnt] != nullptr)
+		{
+			m_apModel[nCnt]->Draw();
+		}
+	}
+
 }
 
 //================================================

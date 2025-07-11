@@ -44,6 +44,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	D3DDISPLAYMODE d3ddm;							//ディスプレイモード
 	D3DPRESENT_PARAMETERS d3dpp;					//プレゼンテーションパラメータ
 
+
 	//Direct3Dオブジェクトの作成
 	m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 	if (m_pD3D == NULL)
@@ -97,6 +98,86 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 			}
 		}
 	}
+
+	LPDIRECT3DSURFACE9 pRenderDef, pZBuffDef;
+
+	for (int nCnt = 0; nCnt < 2; nCnt++)
+	{
+		//レンダリングターゲット用テクスチャの生成
+		m_pD3DDevice->CreateTexture(SCREEN_WIDTH,
+			SCREEN_HEIGHT,
+			1,
+			D3DUSAGE_RENDERTARGET,
+			D3DFMT_A8R8G8B8,
+			D3DPOOL_DEFAULT,
+			&m_apTextureMT[nCnt],
+			NULL);
+
+		//テクスチャレンダリング用インタフェースの生成
+		m_apTextureMT[nCnt]->GetSurfaceLevel(0, &m_apRenderMT[nCnt]);
+	}
+
+	////レンダリングターゲット用テクスチャの生成
+	//m_pD3DDevice->CreateTexture(SCREEN_WIDTH,
+	//	SCREEN_HEIGHT,
+	//	1,
+	//	D3DUSAGE_RENDERTARGET,
+	//	D3DFMT_A8R8G8B8,
+	//	D3DPOOL_DEFAULT,
+	//	&m_pTextureMT,
+	//	NULL);
+
+	////テクスチャレンダリング用インタフェースの生成
+	//m_pTextureMT->GetSurfaceLevel(0, &m_pRenderMT);
+
+	//テクスチャレンダリング用Zバッファの生成
+	m_pD3DDevice->CreateDepthStencilSurface(
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
+		D3DFMT_D16,
+		D3DMULTISAMPLE_NONE,
+		0,
+		TRUE,
+		&m_pZBuffMT,
+		NULL
+	);
+
+	////現在のレンダリングターゲットを取得
+	//m_pD3DDevice->GetRenderTarget(0, &pRenderDef);
+
+	////現在のZバッファを取得(保存)
+	//m_pD3DDevice->GetDepthStencilSurface(&pZBuffDef);
+
+	//for (int nCnt = 0; nCnt < 2; nCnt++)
+	//{
+	//	//レンダリングターゲットを生成したテクスチャに設定
+	//	m_pD3DDevice->SetRenderTarget(0, m_apRenderMT[2]);
+	//}
+
+	////Zバッファを生成したテクスチャに設定
+	//m_pD3DDevice->SetDepthStencilSurface(m_pZBuffMT);
+
+	//レンダリングターゲット用テクスチャのクリア
+	m_pD3DDevice->Clear(0, NULL,
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
+	////レンダリングターゲットをもとに戻す
+	//m_pD3DDevice->SetRenderTarget(0, pRenderDef);
+
+	////Zバッファをもとに戻す
+	//m_pD3DDevice->SetDepthStencilSurface(pZBuffDef);
+
+	//テクスチャレンダリング用ビューポートの設定
+	m_viewportMT.X = 0;
+	m_viewportMT.Y = 0;
+	m_viewportMT.Width = 40;
+	m_viewportMT.Height = 80;
+	m_viewportMT.MinZ = 0.0f;
+	m_viewportMT.MaxZ = 0.0f;
+
+
+
 
 	//レンダーステートの設定
 	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -186,4 +267,54 @@ void CRenderer::Draw(void)
 LPDIRECT3DDEVICE9 CRenderer::GetDevice(void)
 {
 	return m_pD3DDevice;
+}
+
+void CRenderer::ChangeTarget(D3DXVECTOR3 posV, D3DXVECTOR3 posR, D3DXVECTOR3 vecU)
+{
+	D3DXMATRIX mtxView, mtxProjection;
+	float fAspect;
+
+	//レンダリングターゲットを生成したテクスチャに設定
+	m_pD3DDevice->SetRenderTarget(0, m_pRenderMT);
+
+	//Zバッファを生成したZバッファに設定
+	m_pD3DDevice->SetDepthStencilSurface(m_pZBuffMT);
+
+	//テクスチャレンダリング用のビューポートを設定
+	m_pD3DDevice->SetViewport(&m_viewportMT);
+
+	//ビューマトリックスの初期化
+	D3DXMatrixIdentity(&mtxView);
+
+	//ビューマトリックスの作成
+	D3DXMatrixLookAtLH(&mtxView,
+		&posV,
+		&posR,
+		&vecU);
+
+	//ビューマトリックスの設定
+	m_pD3DDevice->SetTransform(D3DTS_VIEW, &mtxView);
+
+	//プロジェクションマトリックスの初期化
+	D3DXMatrixIdentity(&mtxProjection);
+
+	fAspect = (float)m_viewportMT.Width / (float)m_viewportMT.Height;
+
+	//プロジェクションマトリックスの作成
+	D3DXMatrixPerspectiveFovLH(&mtxProjection,
+		D3DXToRadian(45.0f),
+		fAspect,
+		10.0f,
+		1000.0f);
+
+	//プロジェクションマトリックスの設定
+	m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
+
+
+
+}
+
+LPDIRECT3DTEXTURE9 CRenderer::GetTextureMT(void)
+{
+	return m_pTextureMT;
 }

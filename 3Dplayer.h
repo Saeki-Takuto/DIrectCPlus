@@ -49,6 +49,15 @@ private:
     bool m_bOnGround;
     CModel* m_apModel[MAX_PARTS];
     int m_nNumModel;
+
+    static LPD3DXMESH m_pMesh;
+    static LPD3DXBUFFER m_pBuffMat;
+    static DWORD m_dwNumMat;
+
+    static D3DXVECTOR3 m_vtxMin;
+    static D3DXVECTOR3 m_vtxMax;
+    static D3DXVECTOR3 m_size;
+
 };
 
 #endif
