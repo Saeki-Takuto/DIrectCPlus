@@ -10,12 +10,13 @@
 //================================================
 #include "manager.h"
 #include "input.h"
-#include "background.h"
+#include "background.h".
 #include "effect.h"
 #include "particle.h"
 #include "objectX.h"
 #include "billboard.h"
 #include "3Dplayer.h"
+#include "shadowS.h"
 
 //================================================
 //静的
@@ -29,6 +30,9 @@ CLight* CManager::m_pLight = NULL;
 C3DPlayer* CManager::m_p3DPlayer = NULL;
 CWall* CManager::m_pWall = NULL;
 CRock* CManager::m_pRock = NULL;
+CShadowS* CManager::m_pShadowS = NULL;
+CScene* CManager::m_pScene = NULL;
+CFade* CManager::m_pFade = NULL;
 
 //================================================
 //コンストラクタ
@@ -72,22 +76,15 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	m_pCamera = new CCamera;
 	m_pCamera->Init();
 
-	//if (FAILED(m_pCamera->Init()))
-	//{
-	//	delete m_pCamera;
-	//	m_pCamera = NULL;
-	//	return -1;
-	//}
-
 	//ライトの設定
 	m_pLight = new CLight;
 	m_pLight->Init();
-	//if (FAILED(m_pLight->Init()))
-	//{
-	//	delete m_pLight;
-	//	m_pLight = NULL;
-	//	return -1;
-	//}
+
+	m_pFade = new CFade;
+	m_pFade->Init();
+
+
+	SetMode(CScene::MODE_TITLE);
 
 	CPlayer::Load();
 	CBullet::Load();	
@@ -97,78 +94,32 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	CScore::Load();
 	CEffect::Load();
 	CRock::Load();
+	CShadowS::Load();
 
-	CObject3D::Create();
+	//CObject3D::Create();
 
-	//CBackground::Create(
-	//	CBackground::BACKGROUND_TYPE_BACK,
-	//	CObject2D::TYPE_NORMAL,
-	//	1280, 720,
-	//	0.0f, 0.0f,
-	//	1, 1, 0,
-	//	1280 * 0.5f, 720 * 0.5f,
-	//	0.0f
+	//m_pObject3D = CObject3D::Create();
+	//m_pWall = CWall::Create();
+
+	//// スコア生成
+	//CScore::Create(
+	//	CScore::SCORE_TYPE_NORMAL_01,
+	//	4, 0, // 桁数と初期値
+	//	D3DXVECTOR3(1200, 50,0), // 中心座標
+	//	30.0f, 50.0f, 4.0f // 幅、高さ、スペース
 	//);
 
-	//CBackground::Create(
-	//	CBackground::BACKGROUND_TYPE_CLOUD,
-	//	CObject2D::TYPE_SCROLL,
-	//	1280, 720,
-	//	0.01f, 0.0f,
-	//	1, 1, 0,
-	//	1280 * 0.5f, 720 * 0.5f,
-	//	0.0f
-	//);
+	//CBillboard::Create();
 
+	////CObjectX::Create();
+	//m_pRock=CRock::Create(40, 10, 150);
+	//m_pRock = CRock::Create(-40, 50, 150);
+	//m_pRock = CRock::Create(40, 90, 150);
+	//m_pRock = CRock::Create(-40, 130, 150);
 
-	//CPlayer::Create(
-	//	CPlayer::TYPE_NORMAL,
-	//	150, 250,
-	//	0.0f, 0.0f,
-	//	1, 1, 0, // アニメーション
-	//	250 * 0.5f, 500 * 0.5f, // 中心座標X, Y
-	//	0.0f);
+	//m_pShadowS = CShadowS::Create(0, 100, 0);
 
-	//CEnemy::Create(
-	//	CEnemy::ENEMY_TYPE_NORMAL_01,
-	//	CObject2D::TYPE_NORMAL,
-	//	100, 100,
-	//	0.0f, 0.0f,
-	//	1, 1, 0,
-	//	50, 50,
-	//	0.0f
-	//);
-
-	//CEnemy::Create(
-	//	CEnemy::ENEMY_TYPE_NORMAL_02,
-	//	CObject2D::TYPE_NORMAL,
-	//	100, 100,
-	//	0.0f, 0.0f,
-	//	1, 1, 0,
-	//	200, 50,
-	//	0.0f
-	//);
-
-	m_pObject3D = CObject3D::Create();
-	m_pWall = CWall::Create();
-
-	// スコア生成
-	CScore::Create(
-		CScore::SCORE_TYPE_NORMAL_01,
-		4, 0, // 桁数と初期値
-		D3DXVECTOR3(1200, 50,0), // 中心座標
-		30.0f, 50.0f, 4.0f // 幅、高さ、スペース
-	);
-
-	CBillboard::Create();
-
-	//CObjectX::Create();
-	m_pRock=CRock::Create(40, 10, 150);
-	m_pRock = CRock::Create(-40, 50, 150);
-	m_pRock = CRock::Create(40, 90, 150);
-	m_pRock = CRock::Create(-40, 130, 150);
-
-	m_p3DPlayer = C3DPlayer::Create();
+	//m_p3DPlayer = C3DPlayer::Create();
 
 	return S_OK;
 }
@@ -199,6 +150,21 @@ void CManager::Uninit(void)
 		m_pRenderer = NULL;
 	}
 
+	if (m_pFade != NULL)
+	{
+		m_pFade->Uninit();
+		delete m_pFade;
+		m_pFade = NULL;
+	}
+
+	if (m_pScene != NULL)
+	{
+		m_pScene->Uninit();
+		delete m_pScene;
+		m_pScene = NULL;
+	}
+
+
 	CEffect::Unload();
 	CBackground::Unload();
 	CEnemy::Unload();
@@ -207,6 +173,7 @@ void CManager::Uninit(void)
 	CPlayer::Unload();
 	CScore::Unload();
 	CRock::Unload();
+	CShadowS::Unload();
 }
 
 //================================================
@@ -214,6 +181,11 @@ void CManager::Uninit(void)
 //================================================
 void CManager::Update(void)
 {
+	if (m_pFade != NULL)
+	{
+		m_pFade->Update();
+	}
+
 	//入力デバイスの更新
 	if (m_pInputKeyboard != NULL)
 	{
@@ -223,6 +195,11 @@ void CManager::Update(void)
 	if (m_pRenderer != NULL)
 	{
 		m_pRenderer->Update();
+	}
+
+	if (m_pScene != NULL)
+	{
+		m_pScene->Update();
 	}
 }
 
@@ -292,4 +269,22 @@ CWall* CManager::GetWall(void)
 CRock* CManager::GetRock(void)
 {
 	return m_pRock;
+}
+
+void CManager::SetMode(CScene::MODE mode)
+{
+	//シーン情報が存在する場合
+	if (m_pScene != NULL)
+	{
+		//終了処理
+		m_pScene->Uninit();
+
+		CObject::ReleaseAll();
+
+		delete m_pScene;
+		m_pScene = NULL;
+	}
+
+	//新たなシーンを生成
+	m_pScene = CScene::Create(mode);
 }

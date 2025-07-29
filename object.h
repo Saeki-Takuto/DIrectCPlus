@@ -42,7 +42,7 @@ public:
 	virtual int GetWidth() = 0;
 	virtual int GetHeight() = 0;
 
-
+	static void UninitAll(void);
 	static void ReleaseAll(void);
 	static void UpdateAll(void);
 	static void DrawAll(void);
@@ -70,6 +70,9 @@ public:
 		return m_apObject[nPriority][nIdx];
 	}
 
+	static CObject* GetTop(int nPriority);
+
+	CObject* GetNext(void);
 
 protected:
 	void Release(void);
@@ -83,8 +86,8 @@ private:
 	static CObject* m_apObject[OBJECT_PRIORITY_MAX][OBJECT_MAX];
 	int m_nPriority; // 優先度
 
-	static CObject* m_pTop;//先頭オブジェクトのポインタ(1つのみ)
-	static CObject* m_pCur;//最後尾オブジェクトのポインタ(1つのみ)
+	static CObject* m_pTop[OBJECT_PRIORITY_MAX];//先頭オブジェクトのポインタ(1つのみ)
+	static CObject* m_pCur[OBJECT_PRIORITY_MAX];//最後尾オブジェクトのポインタ(1つのみ)
 
 	CObject* m_pPrev;//前のオブジェクトへのポインタ
 	CObject* m_pNext;//次のオブジェクトへのポインタ

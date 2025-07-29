@@ -34,8 +34,8 @@ HRESULT CObject3D::Init(void)
 
 	//頂点座標を設定
 	pVtx[0].pos = D3DXVECTOR3(-WIDTH, 0.0f,+ HEIGHT);
-	pVtx[1].pos = D3DXVECTOR3(+WIDTH, 0.0f + 50.0f, + HEIGHT);
-	pVtx[2].pos = D3DXVECTOR3(-WIDTH, 0.0f + 50.0f, - HEIGHT);
+	pVtx[1].pos = D3DXVECTOR3(+WIDTH, 0.0f + 0.0f, + HEIGHT);
+	pVtx[2].pos = D3DXVECTOR3(-WIDTH, 0.0f + 0.0f, - HEIGHT);
 	pVtx[3].pos = D3DXVECTOR3(+WIDTH, 0.0f,- HEIGHT);
 
 	//各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)

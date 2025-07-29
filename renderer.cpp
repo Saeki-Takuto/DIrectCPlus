@@ -11,6 +11,7 @@
 #include "renderer.h"
 #include "object.h"
 #include "main.h"
+#include "manager.h"
 
 //================================================
 //静的メンバ変数
@@ -67,7 +68,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	d3dpp.BackBufferCount = 1;									//バックバッファの数
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;					//ダブルバッファの切り替え(映像信号に同期)
 	d3dpp.EnableAutoDepthStencil = TRUE;						//デブスバッファとステンシルバッファを作成
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;					//デブスバッファとして16bitを使う
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;					//デブスバッファとして16bitを使う
 	d3dpp.Windowed = bWindow;									//ウィンドウモード
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;	//リフレッシュレート
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;	//インターバル
@@ -176,9 +177,6 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	m_viewportMT.MinZ = 0.0f;
 	m_viewportMT.MaxZ = 0.0f;
 
-
-
-
 	//レンダーステートの設定
 	m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
@@ -238,10 +236,16 @@ void CRenderer::Update(void)
 //================================================
 void CRenderer::Draw(void)
 {
+	////画面クリア(バックバッファ&Zバッファのクリア)
+	//m_pD3DDevice->Clear(0, NULL,
+	//	(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+	//	D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
 	//画面クリア(バックバッファ&Zバッファのクリア)
 	m_pD3DDevice->Clear(0, NULL,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL),
 		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
 
 	//描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
@@ -256,6 +260,8 @@ void CRenderer::Draw(void)
 		//描画終了
 		m_pD3DDevice->EndScene();
 	}
+
+	CManager::GetFade()->Draw();
 
 	//バックバッファとフロントバッファの入れ替え
 	m_pD3DDevice->Present(NULL, NULL, NULL, NULL);

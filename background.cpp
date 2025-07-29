@@ -98,7 +98,7 @@ HRESULT CBackground::Load(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/001.png", &m_pTexture[BACKGROUND_TYPE_CLOUD])))
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/TITLE.png", &m_pTexture[BACKGROUND_TYPE_CLOUD])))
 	{
 		return E_FAIL;
 	}

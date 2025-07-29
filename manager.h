@@ -27,6 +27,9 @@
 #include "3Dplayer.h"
 #include "wall.h"
 #include "rock.h"
+#include "shadowS.h"
+#include "scene.h"
+#include "fade.h"
 
 //================================================
 //ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
@@ -60,6 +63,10 @@ public:
 	static C3DPlayer* Get3DPlayer(void);
 	static CWall* GetWall(void);
 	static CRock* GetRock(void);
+	static void SetMode(CScene::MODE mode);
+	static CScene* GetScene(void) { return m_pScene; }
+	static CFade* GetFade(void) { return m_pFade; }
+
 
 
 private:
@@ -67,12 +74,15 @@ private:
 	static CInputKeyboard* m_pInputKeyboard;
 	static CPlayer* m_pPlayer;
 	static CObject3D* m_pObject3D;
-	static C3DPlayer* m_p3DPlayer;
 	static CWall* m_pWall;
 	static CRock* m_pRock;
+	static C3DPlayer* m_p3DPlayer;
 
 	static CCamera* m_pCamera;
 	static CLight* m_pLight;
+	static CShadowS* m_pShadowS;
+	static CScene* m_pScene;
+	static CFade* m_pFade;
 };
 
 #endif

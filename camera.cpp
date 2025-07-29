@@ -2,6 +2,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "3Dplayer.h"
+#include "game.h"
 
 CCamera::CCamera()
 {
@@ -43,9 +44,12 @@ void CCamera::Update(void)
 	pInputKeyboard = CManager::GetInputKeyboard();
 
 	//ƒvƒŒƒCƒ„[‚ÌŽæ“¾
-	C3DPlayer* p3DPlayer = CManager::Get3DPlayer();
+	C3DPlayer* p3DPlayer = CGame::Get3DPlayer();
 
-	if (!p3DPlayer) return;
+	if (p3DPlayer == nullptr)
+	{
+		return;
+	}
 
 	D3DXVECTOR3 playerPos = p3DPlayer->GetPos();
 
