@@ -41,6 +41,7 @@ public:
 
 private:
     D3DXVECTOR3 m_pos;
+    D3DXVECTOR3 m_posOld;
     D3DXVECTOR3 m_rot;
     D3DXMATRIX m_mtxWorld;
     D3DXVECTOR3 m_rotDest;

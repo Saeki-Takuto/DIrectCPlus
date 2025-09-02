@@ -33,6 +33,7 @@ CRock* CManager::m_pRock = NULL;
 CShadowS* CManager::m_pShadowS = NULL;
 CScene* CManager::m_pScene = NULL;
 CFade* CManager::m_pFade = NULL;
+CSound* CManager::m_pSound = NULL;
 
 //================================================
 //コンストラクタ
@@ -80,8 +81,14 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	m_pLight = new CLight;
 	m_pLight->Init();
 
-	m_pFade = new CFade;
-	m_pFade->Init();
+
+	//サウンドの設定
+	m_pSound = new CSound;
+
+	if (FAILED(m_pSound->Init(hWnd)))
+	{
+		return -1;
+	}
 
 
 	SetMode(CScene::MODE_TITLE);
@@ -120,6 +127,9 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow)
 	//m_pShadowS = CShadowS::Create(0, 100, 0);
 
 	//m_p3DPlayer = C3DPlayer::Create();
+
+	m_pFade = new CFade;
+	m_pFade->Init();
 
 	return S_OK;
 }
@@ -164,6 +174,13 @@ void CManager::Uninit(void)
 		m_pScene = NULL;
 	}
 
+	if (m_pSound != NULL)
+	{
+		m_pSound->Uninit();
+		delete m_pSound;
+		m_pSound = NULL;
+	}
+
 
 	CEffect::Unload();
 	CBackground::Unload();
@@ -181,10 +198,6 @@ void CManager::Uninit(void)
 //================================================
 void CManager::Update(void)
 {
-	if (m_pFade != NULL)
-	{
-		m_pFade->Update();
-	}
 
 	//入力デバイスの更新
 	if (m_pInputKeyboard != NULL)
@@ -201,6 +214,12 @@ void CManager::Update(void)
 	{
 		m_pScene->Update();
 	}
+
+	if (m_pFade != NULL)
+	{
+		m_pFade->Update();
+	}
+
 }
 
 //================================================
@@ -283,6 +302,12 @@ void CManager::SetMode(CScene::MODE mode)
 
 		delete m_pScene;
 		m_pScene = NULL;
+	}
+
+	if (m_pSound)
+	{
+		// サウンドの停止
+		m_pSound->Stop();
 	}
 
 	//新たなシーンを生成

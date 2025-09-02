@@ -87,6 +87,10 @@ public:
 
 	void SetMotionType(MOTION_TYPE motion);
 
+	LPD3DXBUFFER GetBuffMat(void) { return m_pBuffMat; }
+	DWORD GetNumMat(void) { return m_dwNumMat; }
+	LPD3DXMESH GetMesh(void) { return m_pMesh; }
+
 
 
 private:

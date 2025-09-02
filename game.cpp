@@ -26,13 +26,11 @@ HRESULT CGame::Init()
 	CRock::Load();
 	m_pWall = CWall::Create();
 
-
 	//CObjectX::Create();
-	m_pRock = CRock::Create(40, 10, 150);
+	m_pRock = CRock::Create(40, 60, 150);
 	m_pRock = CRock::Create(-40, 50, 150);
 	m_pRock = CRock::Create(40, 90, 150);
-	m_pRock = CRock::Create(-40, 130, 150);
-
+	m_pRock = CRock::Create(-40, 90, 150);
 
 	m_p3DPlayer = C3DPlayer::Create();
 
@@ -42,6 +40,9 @@ HRESULT CGame::Init()
 void CGame::Uninit()
 {
     m_p3DPlayer = nullptr;
+	m_pWall = nullptr;
+	m_pRock = nullptr;
+
 	CPlayer::Unload();
 	CRock::Unload();
 }

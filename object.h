@@ -42,7 +42,7 @@ public:
 	virtual int GetWidth() = 0;
 	virtual int GetHeight() = 0;
 
-	static void UninitAll(void);
+	//static void UninitAll(void);
 	static void ReleaseAll(void);
 	static void UpdateAll(void);
 	static void DrawAll(void);
@@ -57,6 +57,7 @@ public:
 		TYPE_BACKGROUND,
 		TYPE_SCORE,
 		TYPE_EFFECT,
+		TYPE_ROCK,
 		TYPE_MAX
 	}OBJECT_TYPE;
 

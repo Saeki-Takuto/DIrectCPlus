@@ -152,5 +152,4 @@ void CFade::SetFade(CScene::MODE pmode)
 		m_mode = pmode;//Ÿ‚Ì‰æ–Ê(ƒ‚[ƒh)‚ğİ’è
 		m_color = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);//•‚¢ƒ|ƒŠƒSƒ“(“§–¾)‚É‚µ‚Ä‚¨‚­
 	}
-
 }

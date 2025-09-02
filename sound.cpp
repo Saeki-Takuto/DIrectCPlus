@@ -1,4 +1,3 @@
-#include "sound.h"
 //==================================================================
 //
 //サウンド処理 [sound.cpp]
@@ -9,6 +8,7 @@
 //================================================
 //インクルード
 //================================================
+#include "sound.h"
 
 //================================================
 //静的メンバ変数
@@ -19,6 +19,15 @@
 //================================================
 CSound::CSound()
 {
+	m_pXAudio2 = NULL;			//XAudio2オブジェクト
+	m_pMasteringVoice = NULL;		//マスターボイス
+
+	for (int nCntSound = 0; nCntSound < SOUND_LABEL_MAX; nCntSound++)
+	{
+		m_apSourceVoice[nCntSound] = NULL;	//ソースボイス
+		m_apDataAudio[nCntSound] = NULL;	//オーディオデータ
+		m_aSizeAudio[nCntSound] = 0;	//オーディオデータのサイズ
+	}
 }
 
 //================================================
@@ -26,121 +35,13 @@ CSound::CSound()
 //================================================
 CSound::~CSound()
 {
+
 }
 
 
 //================================================
 //初期化処理
 //================================================
-
-//================================================
-//終了処理
-//================================================
-
-//================================================
-//更新処理
-//================================================
-
-//================================================
-//描画処理
-//================================================
-
-//================================================
-//生成処理
-//================================================
-
-//================================================
-//テクスチャロード処理
-//================================================
-
-//================================================
-//テクスチャアンロード処理
-//================================================
-
-
-
-HRESULT CSound::CheckChunk(HANDLE hFile, DWORD format, DWORD* pChunkSize, DWORD* pChunkDataPosition)
-{
-	HRESULT hr = S_OK;
-	DWORD dwRead;
-	DWORD dwChunkType;
-	DWORD dwChunkDataSize;
-	DWORD dwRIFFDataSize = 0;
-	DWORD dwFileType;
-	DWORD dwBytesRead = 0;
-	DWORD dwOffset = 0;
-
-	if (SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-	{// ファイルポインタを先頭に移動
-		return HRESULT_FROM_WIN32(GetLastError());
-	}
-
-	while (hr == S_OK)
-	{
-		if (ReadFile(hFile, &dwChunkType, sizeof(DWORD), &dwRead, NULL) == 0)
-		{// チャンクの読み込み
-			hr = HRESULT_FROM_WIN32(GetLastError());
-		}
-
-		if (ReadFile(hFile, &dwChunkDataSize, sizeof(DWORD), &dwRead, NULL) == 0)
-		{// チャンクデータの読み込み
-			hr = HRESULT_FROM_WIN32(GetLastError());
-		}
-
-		switch (dwChunkType)
-		{
-		case 'FFIR':
-			dwRIFFDataSize = dwChunkDataSize;
-			dwChunkDataSize = 4;
-			if (ReadFile(hFile, &dwFileType, sizeof(DWORD), &dwRead, NULL) == 0)
-			{// ファイルタイプの読み込み
-				hr = HRESULT_FROM_WIN32(GetLastError());
-			}
-			break;
-
-		default:
-			if (SetFilePointer(hFile, dwChunkDataSize, NULL, FILE_CURRENT) == INVALID_SET_FILE_POINTER)
-			{// ファイルポインタをチャンクデータ分移動
-				return HRESULT_FROM_WIN32(GetLastError());
-			}
-		}
-
-		dwOffset += sizeof(DWORD) * 2;
-		if (dwChunkType == format)
-		{
-			*pChunkSize = dwChunkDataSize;
-			*pChunkDataPosition = dwOffset;
-
-			return S_OK;
-		}
-
-		dwOffset += dwChunkDataSize;
-		if (dwBytesRead >= dwRIFFDataSize)
-		{
-			return S_FALSE;
-		}
-	}
-
-	return S_OK;
-}
-
-HRESULT CSound::ReadChunkData(HANDLE hFile, void* pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset)
-{
-	DWORD dwRead;
-
-	if (SetFilePointer(hFile, dwBufferoffset, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
-	{// ファイルポインタを指定位置まで移動
-		return HRESULT_FROM_WIN32(GetLastError());
-	}
-
-	if (ReadFile(hFile, pBuffer, dwBuffersize, &dwRead, NULL) == 0)
-	{// データの読み込み
-		return HRESULT_FROM_WIN32(GetLastError());
-	}
-
-	return S_OK;
-}
-
 HRESULT CSound::Init(HWND hWnd)
 {
 	HRESULT hr;
@@ -279,6 +180,9 @@ HRESULT CSound::Init(HWND hWnd)
 	return S_OK;
 }
 
+//================================================
+//終了処理
+//================================================
 void CSound::Uninit(void)
 {
 	// 一時停止
@@ -315,6 +219,98 @@ void CSound::Uninit(void)
 
 }
 
+//=============================================================================
+// チャンクのチェック
+//=============================================================================
+HRESULT CSound::CheckChunk(HANDLE hFile, DWORD format, DWORD* pChunkSize, DWORD* pChunkDataPosition)
+{
+	HRESULT hr = S_OK;
+	DWORD dwRead;
+	DWORD dwChunkType;
+	DWORD dwChunkDataSize;
+	DWORD dwRIFFDataSize = 0;
+	DWORD dwFileType;
+	DWORD dwBytesRead = 0;
+	DWORD dwOffset = 0;
+
+	if (SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+	{// ファイルポインタを先頭に移動
+		return HRESULT_FROM_WIN32(GetLastError());
+	}
+
+	while (hr == S_OK)
+	{
+		if (ReadFile(hFile, &dwChunkType, sizeof(DWORD), &dwRead, NULL) == 0)
+		{// チャンクの読み込み
+			hr = HRESULT_FROM_WIN32(GetLastError());
+		}
+
+		if (ReadFile(hFile, &dwChunkDataSize, sizeof(DWORD), &dwRead, NULL) == 0)
+		{// チャンクデータの読み込み
+			hr = HRESULT_FROM_WIN32(GetLastError());
+		}
+
+		switch (dwChunkType)
+		{
+		case 'FFIR':
+			dwRIFFDataSize = dwChunkDataSize;
+			dwChunkDataSize = 4;
+			if (ReadFile(hFile, &dwFileType, sizeof(DWORD), &dwRead, NULL) == 0)
+			{// ファイルタイプの読み込み
+				hr = HRESULT_FROM_WIN32(GetLastError());
+			}
+			break;
+
+		default:
+			if (SetFilePointer(hFile, dwChunkDataSize, NULL, FILE_CURRENT) == INVALID_SET_FILE_POINTER)
+			{// ファイルポインタをチャンクデータ分移動
+				return HRESULT_FROM_WIN32(GetLastError());
+			}
+		}
+
+		dwOffset += sizeof(DWORD) * 2;
+		if (dwChunkType == format)
+		{
+			*pChunkSize = dwChunkDataSize;
+			*pChunkDataPosition = dwOffset;
+
+			return S_OK;
+		}
+
+		dwOffset += dwChunkDataSize;
+		if (dwBytesRead >= dwRIFFDataSize)
+		{
+			return S_FALSE;
+		}
+	}
+
+	return S_OK;
+}
+
+//=============================================================================
+// チャンクデータの読み込み
+//=============================================================================
+HRESULT CSound::ReadChunkData(HANDLE hFile, void* pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset)
+{
+	DWORD dwRead;
+
+	if (SetFilePointer(hFile, dwBufferoffset, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+	{// ファイルポインタを指定位置まで移動
+		return HRESULT_FROM_WIN32(GetLastError());
+	}
+
+	if (ReadFile(hFile, pBuffer, dwBuffersize, &dwRead, NULL) == 0)
+	{// データの読み込み
+		return HRESULT_FROM_WIN32(GetLastError());
+	}
+
+	return S_OK;
+}
+
+
+//=============================================================================
+// セグメント再生(再生中なら停止)
+//=============================================================================
 HRESULT CSound::PlaySound(SOUND_LABEL label)
 {
 	XAUDIO2_VOICE_STATE xa2state;
@@ -347,6 +343,9 @@ HRESULT CSound::PlaySound(SOUND_LABEL label)
 	return S_OK;
 }
 
+//=============================================================================
+// セグメント停止(ラベル指定)
+//=============================================================================
 void CSound::Stop(SOUND_LABEL label)
 {
 	XAUDIO2_VOICE_STATE xa2state;
@@ -364,6 +363,9 @@ void CSound::Stop(SOUND_LABEL label)
 
 }
 
+//=============================================================================
+// セグメント停止(全て)
+//=============================================================================
 void CSound::Stop(void)
 {
 	// 一時停止
@@ -375,5 +377,4 @@ void CSound::Stop(void)
 			m_apSourceVoice[nCntSound]->Stop(0);
 		}
 	}
-
 }

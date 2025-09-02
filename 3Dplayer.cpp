@@ -11,10 +11,14 @@
 #include "3Dplayer.h"
 #include "renderer.h"
 #include "manager.h"
+#include "game.h"
 
 //================================================
 //静的メンバ変数
 //================================================
+D3DXVECTOR3 C3DPlayer::m_vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+D3DXVECTOR3 C3DPlayer::m_vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+D3DXVECTOR3 C3DPlayer::m_size   = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 //================================================
 //コンストラクタ
@@ -25,6 +29,9 @@ C3DPlayer::C3DPlayer()
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rotDest = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_size = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
@@ -341,6 +348,78 @@ HRESULT C3DPlayer::Init(void)
 			}
 		}
 	}
+
+	int nNumVtx;//頂点数
+	DWORD sizeFVF;//頂点フォーマットのサイズ
+	BYTE* pVtxBuff;//頂点バッファへのポインタ
+
+	for (int nCntModel = 0; nCntModel < m_nNumModel; nCntModel++)
+	{
+		D3DXMATERIAL* pMat;//マテリアルへのポインタ
+
+		//マテリアルデータへのポインタを取得
+		pMat = (D3DXMATERIAL*)m_apModel[nCntModel]->GetBuffMat()->GetBufferPointer();
+
+		//頂点数の取得
+		nNumVtx = m_apModel[nCntModel]->GetMesh()->GetNumVertices();
+
+		//頂点フォーマットのサイズを取得
+		sizeFVF = D3DXGetFVFVertexSize(m_apModel[nCntModel]->GetMesh()->GetFVF());
+		
+		//頂点バッファのロック
+		m_apModel[nCntModel]->GetMesh()->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
+
+		for (int nCntVtx = 0; nCntVtx < nNumVtx; nCntVtx++)
+		{
+			//頂点座標の代入
+			D3DXVECTOR3 vtx = *(D3DXVECTOR3*)pVtxBuff;
+
+			//xの最大値比較
+			if (vtx.x > m_vtxMax.x)
+			{
+				m_vtxMax.x = vtx.x;
+			}
+
+			//yの最大値比較
+			if (vtx.y > m_vtxMax.y)
+			{
+				m_vtxMax.y = vtx.y;
+			}
+
+			//xの最大値比較
+			if (vtx.z > m_vtxMax.z)
+			{
+				m_vtxMax.z = vtx.z;
+			}
+
+			//xの最小値比較
+			if (vtx.x < m_vtxMin.x)
+			{
+				m_vtxMin.x = vtx.x;
+			}
+
+			//yの最小値比較
+			if (vtx.y < m_vtxMin.y)
+			{
+				m_vtxMin.y = vtx.y;
+			}
+
+			//xの最小値比較
+			if (vtx.z < m_vtxMin.z)
+			{
+				m_vtxMin.z = vtx.z;
+			}
+
+			//頂点フォーマットのサイズ分ポインタを進める
+			pVtxBuff += sizeFVF;
+		}
+
+		//頂点バッファのアンロック
+		m_apModel[nCntModel]->GetMesh()->UnlockVertexBuffer();
+	}
+
+	m_size = m_vtxMax - m_vtxMin;
+
 	return S_OK;
 }
 
@@ -374,6 +453,8 @@ void C3DPlayer::Update(void)
 
 	CamRot = pCamera->GetRot();
 
+	m_posOld = m_pos;
+
 	if (pInputKeyboard->Repeat(DIK_DOWN) == true)
 	{
 		m_move.x += sinf(CamRot.y);
@@ -400,24 +481,32 @@ void C3DPlayer::Update(void)
 		m_rotDest.y = CamRot.y - D3DX_PI * 0.5f;
 	}
 
+	//gameのRockとObject3Dを取得
+	CRock* pRock = CGame::GetRock();
+
 	//Object3Dを取得
 	CObject3D* pObject3D = CManager::GetObject3D();
-	//rockを取得
-	CRock* pObjectRock = CManager::GetRock();
 
-	// 現在座標の地面の高さを取得
-	float groundY = 0.0f;
-	if (pObject3D) {
-		groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+	// ジャンプ処理
+	if (pInputKeyboard->Trigger(DIK_SPACE) == true)
+	{
+		// 足場の上にいるときだけジャンプ可能
+		if (!m_bJump)
+		{
+			m_move.y += 4.0f;
+			m_bJump = true;
+		}
 	}
 
-	float rockY = 0.0f;
-	if (pObjectRock) {
-		rockY = pObjectRock->GetHeight(m_pos.x, m_pos.z);
-	}
 
-	// 足場の高さを決定（地面と岩のうち高い方）
-	float platformY = (groundY > rockY) ? groundY : rockY;
+	m_pos += m_move;
+
+	//移動量を更新(減衰させる)
+	m_move.x += (0.0f - m_move.x) * 0.17f;
+	m_move.z += (0.0f - m_move.z) * 0.17f;
+
+	m_pos = pRock->Colision(m_pos, m_posOld, m_size);
+
 
 	//// 現在座標の地面の高さを取得
 	//float groundY = 0.0f;
@@ -426,8 +515,22 @@ void C3DPlayer::Update(void)
 	//}
 
 	//float rockY = 0.0f;
-	//if (pObjectRock) {
-	//	rockY = pObjectRock->GetHeight(m_pos.x, m_pos.z);
+	//if (pRock) {
+	//	rockY = pRock->GetHeight(m_pos.x, m_pos.z);
+	//}
+
+	// 足場の高さを決定（地面と岩のうち高い方）
+	//float platformY = (groundY > rockY) ? groundY : rockY;
+
+	//// 現在座標の地面の高さを取得
+	//float groundY = 0.0f;
+	//if (pObject3D) {
+	//	groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+	//}
+
+	//float rockY = 0.0f;
+	//if (pRock) {
+	//	rockY = pRock->GetHeight(m_pos.x, m_pos.z);
 	//}
 
 	//// ジャンプ処理
@@ -441,16 +544,6 @@ void C3DPlayer::Update(void)
 	//	}
 	//}
 
-	// ジャンプ処理
-	if (pInputKeyboard->Trigger(DIK_SPACE) == true)
-	{
-		// 足場の上にいるときだけジャンプ可能
-		if (!m_bJump && fabs(m_pos.y - platformY) < 0.15f)
-		{
-			m_move.y += 4.0f;
-			m_bJump = true;
-		}
-	}
 
 
 	if (m_rotDest.y - m_rot.y >= D3DX_PI)
@@ -464,30 +557,27 @@ void C3DPlayer::Update(void)
 
 	m_rot.y += (m_rotDest.y - m_rot.y) * 0.1f;
 
-	m_pos += m_move;
-
-	//移動量を更新(減衰させる)
-	m_move.x += (0.0f - m_move.x) * 0.17f;
-	m_move.z += (0.0f - m_move.z) * 0.17f;
 
 
 	m_move.y -= 0.1f;
 
-	//// 着地判定
-	//if (m_pos.y <= groundY + 0.05f)
-	//{
-	//	m_pos.y = groundY;
-	//	m_move.y = 0.0f;
-	//	m_bJump = false;
-	//}
-
 	// 着地判定
-	if (m_pos.y <= platformY + 0.05f)
+	if (m_pos.y <=  0.0f)
 	{
-		m_pos.y = platformY;
+		m_pos.y = 0.0f;
 		m_move.y = 0.0f;
 		m_bJump = false;
 	}
+
+	//// 着地判定
+	//if (m_pos.y <= platformY + 0.05f)
+	//{
+	//	m_pos.y = platformY;
+	//	m_move.y = 0.0f;
+	//	m_bJump = false;
+	//}
+	 
+	
 	//モデルの解放
 	for (int nCnt = 0; nCnt < MAX_PARTS; nCnt++)
 	{

@@ -1,34 +1,15 @@
-//==================================================================
-//
-//壁処理 [wall.cpp]
-//Author:Takuto Saeki
-//
-//==================================================================
-
-//================================================
-//インクルード
-//================================================
 #include "wall.h"
 #include "renderer.h"
 #include "manager.h"
 
-//================================================
-//コンストラクタ
-//================================================
 CWall::CWall()
 {
 }
 
-//================================================
-//デストラクタ
-//================================================
 CWall::~CWall()
 {
 }
 
-//================================================
-//初期化処理
-//================================================
 HRESULT CWall::Init(void)
 {
 	//デバイスの取得
@@ -55,10 +36,10 @@ HRESULT CWall::Init(void)
 	m_pVtxBuffPolygon->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標を設定
-	pVtx[0].pos = D3DXVECTOR3(-WALL_WIDTH, +WALL_HEIGHT,0.0f);
-	pVtx[1].pos = D3DXVECTOR3(+WALL_WIDTH, +WALL_HEIGHT,0.0f);
-	pVtx[2].pos = D3DXVECTOR3(-WALL_WIDTH, -WALL_HEIGHT,0.0f);
-	pVtx[3].pos = D3DXVECTOR3(+WALL_WIDTH, -WALL_HEIGHT,0.0f);
+	pVtx[0].pos = D3DXVECTOR3(-WALL_WIDTH, +WALL_HEIGHT, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(+WALL_WIDTH, +WALL_HEIGHT, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(-WALL_WIDTH, -WALL_HEIGHT, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(+WALL_WIDTH, -WALL_HEIGHT, 0.0f);
 
 
 	//各頂点の法線の設定(※ベクトルの大きさは1にする必要がある)
@@ -74,16 +55,10 @@ HRESULT CWall::Init(void)
 	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//テクスチャ座標の設定
-	//pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	//pVtx[1].tex = D3DXVECTOR2(2.0f, 0.0f);
-	//pVtx[2].tex = D3DXVECTOR2(0.0f, 8.0f);
-	//pVtx[3].tex = D3DXVECTOR2(2.0f, 8.0f);
-
 	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(1.0f, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
-
+	pVtx[1].tex = D3DXVECTOR2(2.0f, 0.0f);
+	pVtx[2].tex = D3DXVECTOR2(0.0f, 8.0f);
+	pVtx[3].tex = D3DXVECTOR2(2.0f, 8.0f);
 
 	// 頂点座標
 	D3DXVECTOR3 a = pVtx[0].pos;
@@ -119,9 +94,6 @@ HRESULT CWall::Init(void)
 	return S_OK;
 }
 
-//================================================
-//終了処理
-//================================================
 void CWall::Uninit(void)
 {
 	if (m_pVtxBuffPolygon != NULL)
@@ -137,9 +109,6 @@ void CWall::Uninit(void)
 	}
 }
 
-//================================================
-//更新処理
-//================================================
 void CWall::Update(void)
 {
 	//CInputKeyboard* pInputKeyboard;
@@ -184,17 +153,11 @@ void CWall::Update(void)
 
 }
 
-//================================================
-//描画処理
-//================================================
 void CWall::Draw(void)
 {
 	//デバイスの取得
 	CRenderer* renderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = renderer->GetDevice();
-
-	LPDIRECT3DTEXTURE9 pTexMT;
-
 
 	// ライティング有効化
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
@@ -237,11 +200,8 @@ void CWall::Draw(void)
 	//頂点バッファをデバイスのデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuffPolygon, 0, sizeof(VERTEX_3D));
 
-	pTexMT = CManager::GetRenderer()->GetTextureMT();
-
 	//テクスチャの設定
-	//pDevice->SetTexture(0, m_pTexturePolygon);
-	pDevice->SetTexture(0, pTexMT);
+	pDevice->SetTexture(0, m_pTexturePolygon);
 
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
@@ -249,11 +209,9 @@ void CWall::Draw(void)
 	//ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
+	pDevice->SetTexture(0, NULL); // テクスチャステージ0をリセット
 }
 
-//================================================
-//生成処理
-//================================================
 CWall* CWall::Create(void)
 {
 	CWall* pObject3D = new CWall;

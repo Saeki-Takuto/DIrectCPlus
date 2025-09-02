@@ -79,7 +79,7 @@ public:
 		{"data/SE/Boot.wav", 0},			//SE8
 		{"data/SE/Error1.wav", 0},			//SE9
 		{"data/SE/Denger.wav", 0},			//SE10
-		{"data/SE/OUT.wav", 0},			//SE11
+		{"data/SE/OUT.wav", 0},				//SE11
 	};
 
 	HRESULT Init(HWND hWnd);
@@ -89,13 +89,11 @@ public:
 	void Stop(void);
 
 private:
-	IXAudio2* m_pXAudio2 = NULL;								// XAudio2オブジェクトへのインターフェイス
-	IXAudio2MasteringVoice* m_pMasteringVoice = NULL;			// マスターボイス
-	IXAudio2SourceVoice* m_apSourceVoice[SOUND_LABEL_MAX] = {};	// ソースボイス
-	BYTE* m_apDataAudio[SOUND_LABEL_MAX] = {};					// オーディオデータ
-	DWORD m_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
-
-
+	IXAudio2* m_pXAudio2;									//XAudio2オブジェクトへのインターフェイス
+	IXAudio2MasteringVoice* m_pMasteringVoice;				//マスターボイス
+	IXAudio2SourceVoice* m_apSourceVoice[SOUND_LABEL_MAX];	//ソースボイス
+	BYTE* m_apDataAudio[SOUND_LABEL_MAX];					//オーディオデータ
+	DWORD m_aSizeAudio[SOUND_LABEL_MAX];					//オーディオデータサイズ
 };
 
 #endif

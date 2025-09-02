@@ -20,8 +20,9 @@ HRESULT CTitle::Init()
 {
 	CPlayer::Load();
 	CRock::Load();
-	CBackground::Load();
 	m_pWall = CWall::Create();
+	CBackground::Load();
+
 
 
 	//CObjectX::Create();
@@ -36,12 +37,18 @@ HRESULT CTitle::Init()
 	CBackground::Create(
 	CBackground::BACKGROUND_TYPE_CLOUD,
 	CObject2D::TYPE_SCROLL,
-	1280, 720,
+	1280, 300,
 	0.01f, 0.0f,
 	1, 1, 0,
 	1280 * 0.5f, 720 * 0.5f,0.0f,
 	0.0f
 );
+
+	CSound* pSound = CManager::GetSound();
+	if (pSound != nullptr)
+	{
+		pSound->PlaySound(CSound::SOUND_LABEL_BGM01);
+	}
 
 	return S_OK;
 }

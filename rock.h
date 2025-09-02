@@ -53,6 +53,9 @@ public:
     static void Unload(void);
     float GetHeight(float posx, float posz);
 
+	D3DXVECTOR3 Colision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size);
+
+
 
 private:
     static LPD3DXMESH m_pMesh;

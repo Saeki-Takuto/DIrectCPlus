@@ -103,6 +103,7 @@ CRock* CRock::Create(float X, float Y, float Z)
 	CRock* pRock = new CRock();
 	pRock->BindX(m_pBuffMat, m_dwNumMat, m_pMesh);
 	pRock->Init();
+	pRock->SetType(CObject::TYPE_ROCK);
 	pRock->SetPos(X, Y, Z);
 	return pRock;
 }
@@ -111,7 +112,7 @@ HRESULT CRock::Load(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	HRESULT hr = D3DXLoadMeshFromX("data/MODEL/privacy.x",
+	HRESULT hr = D3DXLoadMeshFromX("data/MODEL/rock.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
@@ -169,4 +170,70 @@ float CRock::GetHeight(float posx, float posz)
 	}
 
 	return -1.0f;
+}
+
+D3DXVECTOR3 CRock::Colision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size)
+{
+	D3DXVECTOR3 rockPos = GetPos();
+	D3DXVECTOR3 returnPos = pos;
+
+	// â∫Ç©ÇÁìñÇΩÇ¡ÇΩèÍçá
+	if (posOld.y + size.y <= rockPos.y - m_size.y * 0.5f && pos.y + size.y >= rockPos.y - m_size.y * 0.5f)
+	{
+		if (pos.z - size.z * 0.5f < rockPos.z + m_size.z * 0.5f && pos.z + size.z * 0.5f > rockPos.z - m_size.z * 0.5f &&
+			pos.x - size.x * 0.5f < rockPos.x + m_size.x * 0.5f && pos.x + size.x * 0.5f > rockPos.x - m_size.x * 0.5f)
+		{
+			returnPos.y = rockPos.y - m_size.y * 0.5f - size.y;
+		}
+	}
+
+	// è„Ç©ÇÁìñÇΩÇ¡ÇΩèÍçá
+	if (posOld.y >= rockPos.y + m_size.y && pos.y <= rockPos.y + m_size.y)
+	{
+		if (pos.z - size.z * 0.5f < rockPos.z + m_size.z * 0.5f && pos.z + size.z * 0.5f > rockPos.z - m_size.z * 0.5f &&
+			pos.x - size.x * 0.5f < rockPos.x + m_size.x * 0.5f && pos.x + size.x * 0.5f > rockPos.x - m_size.x * 0.5f)
+		{
+			returnPos.y = rockPos.y + m_size.y;
+		}
+	}
+
+	// Zé≤ëOå„
+	if (posOld.z + size.z * 0.5f <= rockPos.z - m_size.z * 0.5f && pos.z + size.z * 0.5f >= rockPos.z - m_size.z * 0.5f)
+	{
+		if (pos.y - size.y * 0.5f < rockPos.y + m_size.y * 0.5f && pos.y + size.y * 0.5f > rockPos.y - m_size.y * 0.5f &&
+			pos.x - size.x * 0.5f < rockPos.x + m_size.x * 0.5f && pos.x + size.x * 0.5f > rockPos.x - m_size.x * 0.5f)
+		{
+			returnPos.z = rockPos.z - m_size.z * 0.5f - size.z * 0.5f;
+		}
+	}
+
+	if (posOld.z - size.z * 0.5f >= rockPos.z + m_size.z * 0.5f && pos.z - size.z * 0.5f <= rockPos.z + m_size.z * 0.5f)
+	{
+		if (pos.y - size.y * 0.5f < rockPos.y + m_size.y * 0.5f && pos.y + size.y * 0.5f > rockPos.y - m_size.y * 0.5f &&
+			pos.x - size.x * 0.5f < rockPos.x + m_size.x * 0.5f && pos.x + size.x * 0.5f > rockPos.x - m_size.x * 0.5f)
+		{
+			returnPos.z = rockPos.z + m_size.z * 0.5f + size.z * 0.5f;
+		}
+	}
+
+	// Xé≤ç∂âE
+	if (posOld.x + size.x * 0.5f <= rockPos.x - m_size.x * 0.5f && pos.x + size.x * 0.5f >= rockPos.x - m_size.x * 0.5f)
+	{
+		if (pos.y - size.y < rockPos.y + m_size.y * 0.5f && pos.y + size.y > rockPos.y - m_size.y * 0.5f &&
+			pos.z - size.z * 0.5f < rockPos.z + m_size.z * 0.5f && pos.z + size.z * 0.5f > rockPos.z - m_size.z * 0.5f)
+		{
+			returnPos.x = rockPos.x - m_size.x * 0.5f - size.x * 0.5f;
+		}
+	}
+
+	if (posOld.x - size.x * 0.5f >= rockPos.x + m_size.x * 0.5f && pos.x - size.x * 0.5f <= rockPos.x + m_size.x * 0.5f)
+	{
+		if (pos.y - size.y < rockPos.y + m_size.y * 0.5f && pos.y + size.y > rockPos.y - m_size.y * 0.5f &&
+			pos.z - size.z * 0.5f < rockPos.z + m_size.z * 0.5f && pos.z + size.z * 0.5f > rockPos.z - m_size.z * 0.5f)
+		{
+			returnPos.x = rockPos.x + m_size.x * 0.5f + size.x * 0.5f;
+		}
+	}
+
+	return returnPos;
 }

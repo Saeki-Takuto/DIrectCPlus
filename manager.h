@@ -30,6 +30,7 @@
 #include "shadowS.h"
 #include "scene.h"
 #include "fade.h"
+#include "sound.h"
 
 //================================================
 //ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
@@ -66,6 +67,7 @@ public:
 	static void SetMode(CScene::MODE mode);
 	static CScene* GetScene(void) { return m_pScene; }
 	static CFade* GetFade(void) { return m_pFade; }
+	static CSound* GetSound(void) { return m_pSound; }
 
 
 
@@ -77,6 +79,8 @@ private:
 	static CWall* m_pWall;
 	static CRock* m_pRock;
 	static C3DPlayer* m_p3DPlayer;
+	static CSound* m_pSound;
+
 
 	static CCamera* m_pCamera;
 	static CLight* m_pLight;
