@@ -1,11 +1,13 @@
 #include "title.h"
 #include "manager.h"
 #include "background.h"
-CPlayer* CTitle::m_pPlayer = NULL;
+//CPlayer* CTitle::m_pPlayer = NULL;
 CWall* CTitle::m_pWall = NULL;
 CRock* CTitle::m_pRock = NULL;
 CScene* CTitle::m_pScene = NULL;
 C3DPlayer* CTitle::m_p3DPlayer = NULL;
+CBackground* CTitle::m_pBackground = NULL;
+CObject2D* CTitle::m_pObject2D = NULL;
 
 
 CTitle::CTitle()
@@ -18,7 +20,7 @@ CTitle::~CTitle()
 
 HRESULT CTitle::Init()
 {
-	CPlayer::Load();
+	//CPlayer::Load();
 	CRock::Load();
 	m_pWall = CWall::Create();
 	CBackground::Load();
@@ -34,8 +36,19 @@ HRESULT CTitle::Init()
 
 	//m_p3DPlayer = C3DPlayer::Create();
 
-	CBackground::Create(
-	CBackground::BACKGROUND_TYPE_CLOUD,
+	m_pBackground = CBackground::Create(
+		CBackground::BACKGROUND_TYPE_BACK,
+		CObject2D::TYPE_NORMAL,
+		1280, 720,
+		0.01f, 0.0f,
+		1, 1, 0,
+		1280 * 0.5f, 720 * 0.5f, 0.0f,
+		0.0f
+	);
+
+
+	m_pBackground=CBackground::Create(
+	CBackground::BACKGROUND_TYPE_TITLE,
 	CObject2D::TYPE_SCROLL,
 	1280, 300,
 	0.01f, 0.0f,
@@ -55,9 +68,16 @@ HRESULT CTitle::Init()
 
 void CTitle::Uninit()
 {
-	CPlayer::Unload();
 	CRock::Unload();
 	CBackground::Unload();
+
+	m_p3DPlayer = nullptr;
+	m_pWall = nullptr;
+	m_pRock = nullptr;
+	m_pScene = nullptr;
+	//m_pPlayer = nullptr;
+	m_pBackground = nullptr;
+
 }
 
 void CTitle::Update()
@@ -67,7 +87,7 @@ void CTitle::Update()
 
 	if (pInputKeyboard->Trigger(DIK_SPACE))
 	{
-		//CManager::SetMode(MODE_TITLE);
+		//CManager::SetMode(MODE_TEMPLATE);
 		// フェード取得
 		CFade* pFade = CManager::GetFade();
 
@@ -75,7 +95,7 @@ void CTitle::Update()
 		if (pFade != nullptr)
 		{
 			// 画面遷移
-			pFade->SetFade(MODE_GAME);
+			pFade->SetFade(MODE_TUTORIAL);
 		}
 	}
 
@@ -96,10 +116,10 @@ CTitle* CTitle::Create()
 	return pTitle;
 }
 
-CPlayer* CTitle::GetPlayer(void)
-{
-	return m_pPlayer;
-}
+//CPlayer* CTitle::GetPlayer(void)
+//{
+//	//return m_pPlayer;
+//}
 
 CWall* CTitle::GetWall(void)
 {

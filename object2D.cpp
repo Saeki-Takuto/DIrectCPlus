@@ -99,7 +99,12 @@ HRESULT CObject2D::Init(void)
 //================================================
 void CObject2D::Uninit(void)
 {
-	m_pTexture = NULL;
+	//頂点バッファの破棄
+	if (m_pTexture != NULL)
+	{
+		m_pTexture->Release();
+		m_pTexture = NULL;
+	}
 
 	//頂点バッファの破棄
 	if (m_pVtxBuff != NULL)
@@ -190,25 +195,15 @@ void CObject2D::Update(void)
 //================================================
 void CObject2D::Draw(void)
 {
-	CRenderer* renderer;
+	if (!m_pTexture) return; // テクスチャ未設定なら描画しない
 
-	renderer = CManager::GetRenderer();
+	CRenderer* renderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = renderer->GetDevice();
 
-	LPDIRECT3DDEVICE9 pDevice;		//デバイスへのポインタ
-
-	//デバイスの取得
-	pDevice = renderer->GetDevice();
-
-	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
-
-	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
-
-	//テクスチャの設定
 	pDevice->SetTexture(0, m_pTexture);
 
-	//プレイヤーの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
 
@@ -254,6 +249,8 @@ CObject2D* CObject2D::Create(
 	pObject2D->Init();
 	return pObject2D;
 }
+
+
 
 
 

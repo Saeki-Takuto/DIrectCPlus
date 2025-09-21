@@ -34,6 +34,7 @@ CShadowS* CManager::m_pShadowS = NULL;
 CScene* CManager::m_pScene = NULL;
 CFade* CManager::m_pFade = NULL;
 CSound* CManager::m_pSound = NULL;
+int CManager::m_resultTime = 0; // ★追加
 
 //================================================
 //コンストラクタ
@@ -141,7 +142,6 @@ void CManager::Uninit(void)
 {
 	//オブジェクトの破棄
 	CObject::ReleaseAll();
-	CObject2D::ReleaseAll();
 
 	//入力デバイスの破棄
 	if (m_pInputKeyboard != NULL)
@@ -180,17 +180,6 @@ void CManager::Uninit(void)
 		delete m_pSound;
 		m_pSound = NULL;
 	}
-
-
-	CEffect::Unload();
-	CBackground::Unload();
-	CEnemy::Unload();
-	CExplosion::Unload();
-	CBullet::Unload();
-	CPlayer::Unload();
-	CScore::Unload();
-	CRock::Unload();
-	CShadowS::Unload();
 }
 
 //================================================
@@ -301,7 +290,7 @@ void CManager::SetMode(CScene::MODE mode)
 		CObject::ReleaseAll();
 
 		delete m_pScene;
-		m_pScene = NULL;
+		m_pScene = nullptr;
 	}
 
 	if (m_pSound)
@@ -313,3 +302,4 @@ void CManager::SetMode(CScene::MODE mode)
 	//新たなシーンを生成
 	m_pScene = CScene::Create(mode);
 }
+

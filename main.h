@@ -25,7 +25,7 @@
 //マクロ定義
 //================================================
 #define CLASS_NAME "WindowClass"					//ウィンドウクラスの名前
-#define WINDOW_NAME "お味噌汁ファンタジスタ"		//ウィンドウの名前(キャプションに表示)
+#define WINDOW_NAME "CRIME ROCK"		//ウィンドウの名前(キャプションに表示)
 #define SCREEN_WIDTH (1280)							//ウィンドウの幅
 #define SCREEN_HEIGHT (720)							//ウィンドウの高さ
 

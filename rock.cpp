@@ -19,6 +19,10 @@ CRock::~CRock()
 
 HRESULT CRock::Init(void)
 {
+	if (!m_pMesh) {
+		// メッシュが未ロード
+		return E_FAIL;
+	}
 	CObjectX::Init();
 
 	int nNumVtx;//頂点数
@@ -108,11 +112,14 @@ CRock* CRock::Create(float X, float Y, float Z)
 	return pRock;
 }
 
+//
+//いらない(Createに渡す)
+//
 HRESULT CRock::Load(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	HRESULT hr = D3DXLoadMeshFromX("data/MODEL/rock.x",
+	HRESULT hr = D3DXLoadMeshFromX("data/MODEL/clime.x",
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
 		NULL,
@@ -132,11 +139,15 @@ HRESULT CRock::Load(void)
 	return S_OK;
 }
 
+//
+//いらない
+//
+
 void CRock::Unload(void)
 {
 	if (m_pBuffMat != NULL)
 	{
-		m_pBuffMat->Release();
+   		m_pBuffMat->Release();
 		m_pBuffMat = NULL;
 	}
 
@@ -193,10 +204,9 @@ D3DXVECTOR3 CRock::Colision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 siz
 		if (pos.z - size.z * 0.5f < rockPos.z + m_size.z * 0.5f && pos.z + size.z * 0.5f > rockPos.z - m_size.z * 0.5f &&
 			pos.x - size.x * 0.5f < rockPos.x + m_size.x * 0.5f && pos.x + size.x * 0.5f > rockPos.x - m_size.x * 0.5f)
 		{
-			returnPos.y = rockPos.y + m_size.y;
+			returnPos.y = rockPos.y + m_size.y; // ← プレイヤーの底面が岩の上面に来る
 		}
 	}
-
 	// Z軸前後
 	if (posOld.z + size.z * 0.5f <= rockPos.z - m_size.z * 0.5f && pos.z + size.z * 0.5f >= rockPos.z - m_size.z * 0.5f)
 	{
@@ -237,3 +247,50 @@ D3DXVECTOR3 CRock::Colision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 siz
 
 	return returnPos;
 }
+
+//bool CRock::IsOnTop(const D3DXVECTOR3& playerPos, const D3DXVECTOR3& playerSize)
+//{
+//	D3DXVECTOR3 rockPos = GetPos();
+//	D3DXVECTOR3 rockSize = m_size;
+//
+//	// XZ平面で重なっているか
+//	bool overlapX = fabs(playerPos.x - rockPos.x) < (playerSize.x + rockSize.x) * 0.5f;
+//	bool overlapZ = fabs(playerPos.z - rockPos.z) < (playerSize.z + rockSize.z) * 0.5f;
+//
+//	// プレイヤーの足元と岩の上面の高さが近いか
+//	float playerFootY = playerPos.y;
+//	float rockTopY = rockPos.y + rockSize.y * 0.5f;
+//	bool onTopY = fabs(playerFootY - rockTopY) < 0.15f;
+//
+//	return overlapX && overlapZ && onTopY;
+//}
+
+bool CRock::IsOnTop(const D3DXVECTOR3& playerPos, const D3DXVECTOR3& playerSize)
+{
+	D3DXVECTOR3 rockPos = GetPos();
+	D3DXVECTOR3 rockSize = m_size;
+
+	bool overlapX = fabs(playerPos.x - rockPos.x) < (playerSize.x + rockSize.x) * 0.5f;
+	bool overlapZ = fabs(playerPos.z - rockPos.z) < (playerSize.z + rockSize.z) * 0.5f;
+
+	float playerFootY = playerPos.y;
+	float rockTopY = rockPos.y + rockSize.y;
+	bool onTopY = fabs(playerFootY - rockTopY) < 0.2f; // ← 0.2fに拡大
+
+	return overlapX && overlapZ && onTopY;
+}
+
+//bool CRock::IsOnTop(const D3DXVECTOR3& playerPos, const D3DXVECTOR3& playerSize)
+//{
+//	D3DXVECTOR3 rockPos = GetPos();
+//	D3DXVECTOR3 rockSize = m_size;
+//
+//	bool overlapX = fabs(playerPos.x - rockPos.x) < (playerSize.x + rockSize.x) * 0.5f;
+//	bool overlapZ = fabs(playerPos.z - rockPos.z) < (playerSize.z + rockSize.z) * 0.5f;
+//
+//	float playerFootY = playerPos.y;
+//	float rockTopY = rockPos.y + rockSize.y; // ← ここを修正
+//	bool onTopY = fabs(playerFootY - rockTopY) < 0.2f;
+//
+//	return overlapX && overlapZ && onTopY;
+//}

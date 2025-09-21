@@ -70,6 +70,8 @@ public:
 	static CSound* GetSound(void) { return m_pSound; }
 
 
+	static void SetResultTime(int time) { m_resultTime = time; }
+	static int GetResultTime() { return m_resultTime; }
 
 private:
 	static CRenderer* m_pRenderer;
@@ -87,6 +89,8 @@ private:
 	static CShadowS* m_pShadowS;
 	static CScene* m_pScene;
 	static CFade* m_pFade;
+
+	static int m_resultTime;
 };
 
 #endif

@@ -16,6 +16,9 @@
 #include "wall.h"
 #include "rock.h"
 #include "3Dplayer.h"
+#include "goal.h"
+#include "score.h"
+#include "time.h"
 
 //================================================
 //É}ÉNÉçíËã`
@@ -38,20 +41,21 @@ public:
 
 	static CGame* Create();//ê∂ê¨èàóù
 
-	static CPlayer* GetPlayer(void);
+	//static CPlayer* GetPlayer(void);
 	static CWall* GetWall(void);
 	static CRock* GetRock(void);
 	static C3DPlayer* Get3DPlayer(void);
 
 private:
 
-	static CPlayer* m_pPlayer;
+	//static CPlayer* m_pPlayer;
 	static C3DPlayer* m_p3DPlayer;
 	static CWall* m_pWall;
 	static CRock* m_pRock;
-
+	static CGoal* m_pGoal;
 	static CScene* m_pScene;
-
+	static CScore* m_pScore;
+	static CTime* m_pTime;
 };
 
 

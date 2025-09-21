@@ -8,6 +8,9 @@
 #include "object.h"
 #include "game.h"
 #include "title.h"
+#include "TemplateScene.h"
+#include "result.h"
+#include "tutorial.h"
 CScene::MODE CScene::m_mode = CScene::MODE_NONE; //初期モードはNONE
 
 CScene::CScene()
@@ -16,6 +19,7 @@ CScene::CScene()
 
 CScene::~CScene()
 {
+	Uninit();
 }
 
 HRESULT CScene::Init()
@@ -56,7 +60,15 @@ CScene* CScene::Create(MODE mode)
 		break;
 
 	case MODE_RESULT://リザルト
-		//pScene = CResult::Create();
+		pScene = CResult::Create();
+		break;
+
+	case MODE_TEMPLATE://ゲーム
+		pScene = CTemplateScene::Create();
+		break;
+
+	case MODE_TUTORIAL://ゲーム
+		pScene = CTutorial::Create();
 		break;
 
 	default:

@@ -35,19 +35,6 @@ public:
 		SOUND_LABEL_BGM02,
 		SOUND_LABEL_BGM03,
 		SOUND_LABEL_BGM04,
-		SOUND_LABEL_BGM05,
-		SOUND_LABEL_BGM06,
-		SOUND_LABEL_SE01,
-		SOUND_LABEL_SE02,
-		SOUND_LABEL_SE03,
-		SOUND_LABEL_SE04,
-		SOUND_LABEL_SE05,
-		SOUND_LABEL_SE06,
-		SOUND_LABEL_SE07,
-		SOUND_LABEL_SE08,
-		SOUND_LABEL_SE09,
-		SOUND_LABEL_SE10,
-		SOUND_LABEL_SE11,
 		SOUND_LABEL_MAX,
 	} SOUND_LABEL;
 
@@ -63,23 +50,10 @@ public:
 	// ÉTÉEÉìÉhÇÃèÓïÒ
 	SOUNDINFO m_aSoundInfo[SOUND_LABEL_MAX] =
 	{
-		{"data/BGM/title002.wav", -1},      //BGM1
-		{"data/BGM/result001.wav", -1},     //BGM2
-		{"data/BGM/game000.wav", -1},       //BGM3
-		{"data/BGM/CLEAR.wav", 0},			//BGM4
-		{"data/BGM/GAMEOVER.wav", 0},       //BGM5
-		{"data/BGM/tutorial.wav", 0},       //BGM6
-		{"data/SE/Click.wav", 0},           //SE1
-		{"data/SE/Error.wav", 0},           //SE2
-		{"data/SE/Dong.wav", 0},            //SE3
-		{"data/SE/PauseStart.wav", 0},      //SE4
-		{"data/SE/PauseEnd.wav", 0},        //SE5
-		{"data/SE/SelectUP.wav", 0},        //SE6
-		{"data/SE/SelectDown.wav", 0},      //SE7
-		{"data/SE/Boot.wav", 0},			//SE8
-		{"data/SE/Error1.wav", 0},			//SE9
-		{"data/SE/Denger.wav", 0},			//SE10
-		{"data/SE/OUT.wav", 0},				//SE11
+		{"data/BGM/TITLE.wav", -1},      //BGM1
+		{"data/BGM/TUTO.wav", -1},     //BGM2
+		{"data/BGM/GAME.wav", -1},       //BGM3
+		{"data/BGM/RESULT.wav", -1},			//BGM4
 	};
 
 	HRESULT Init(HWND hWnd);

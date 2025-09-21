@@ -58,116 +58,116 @@ void CCamera::Update(void)
 	m_posV = playerPos + D3DXVECTOR3(0.0f, 100.0f, -200.0f);
 
 	//カメラの移動
-	if (pInputKeyboard->Repeat(DIK_W) == true)
-	{
-		m_posR.x += sinf(m_rot.y) * -2.0f;
-		m_posR.z += cosf(m_rot.y) * -2.0f;
+	//if (pInputKeyboard->Repeat(DIK_W) == true)
+	//{
+	//	m_posR.x += sinf(m_rot.y) * -2.0f;
+	//	m_posR.z += cosf(m_rot.y) * -2.0f;
 
-	}
-	else if (pInputKeyboard->Repeat(DIK_A) == true)
-	{
-		m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
-		m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_A) == true)
+	//{
+	//	m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+	//	m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
 
-	}
-	else if (pInputKeyboard->Repeat(DIK_S) == true)
-	{
-		m_posR.x += sinf(m_rot.y) * 2.0f;
-		m_posR.z += cosf(m_rot.y) * 2.0f;
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_S) == true)
+	//{
+	//	m_posR.x += sinf(m_rot.y) * 2.0f;
+	//	m_posR.z += cosf(m_rot.y) * 2.0f;
 
-	}
-	else if (pInputKeyboard->Repeat(DIK_D) == true)
-	{
-		m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
-		m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_D) == true)
+	//{
+	//	m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+	//	m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
 
-	}
-
-	//注視点の旋回
-	if (pInputKeyboard->Repeat(DIK_X) == true)
-	{
-		m_rot.y += 0.01f;
-		m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
-		m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
-
-		if (m_rot.y > D3DX_PI)
-		{
-			m_rot.y -= D3DX_PI * 2;
-		}
-	}
-	else if (pInputKeyboard->Repeat(DIK_Z) == true)
-	{
-		m_rot.y -= 0.01f;
-		m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
-		m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
-
-		if (m_rot.y < -D3DX_PI)
-		{
-			m_rot.y += D3DX_PI * 2;
-		}
-	}
-
-	//視点の旋回
-	if (pInputKeyboard->Repeat(DIK_V) == true)
-	{
-		m_rot.y += 0.01f;
-		if (m_rot.y > D3DX_PI)
-		{
-			m_rot.y -= D3DX_PI * 2;
-		}
-	}
-	else if (pInputKeyboard->Repeat(DIK_C) == true)
-	{
-		m_rot.y -= 0.01f;
-		if (m_rot.y < -D3DX_PI)
-		{
-			m_rot.y += D3DX_PI * 2;
-		}
-	}
-
-	//視点の旋回
-	if (pInputKeyboard->Repeat(DIK_J) == true)
-	{
-		m_rot.x += 0.01f;
-		if (m_rot.x > D3DX_PI)
-		{
-			m_rot.x -= D3DX_PI * 2;
-		}
-	}
-	else if (pInputKeyboard->Repeat(DIK_K) == true)
-	{
-		m_rot.x -= 0.01f;
-		if (m_rot.x < D3DX_PI)
-		{
-			m_rot.x += D3DX_PI * 2;
-		}
-	}
+	//}
 
 	//注視点の旋回
-	if (pInputKeyboard->Repeat(DIK_Q) == true)
-	{
-		m_rot.z += 0.01f;
-		m_posR.y += sinf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
-		m_posR.x += cosf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+	//if (pInputKeyboard->Repeat(DIK_X) == true)
+	//{
+	//	m_rot.y += 0.01f;
+	//	m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+	//	m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
 
-		if (m_rot.z > D3DX_PI)
-		{
-			m_rot.z -= D3DX_PI * 2;
-		}
+	//	if (m_rot.y > D3DX_PI)
+	//	{
+	//		m_rot.y -= D3DX_PI * 2;
+	//	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_Z) == true)
+	//{
+	//	m_rot.y -= 0.01f;
+	//	m_posR.x += sinf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+	//	m_posR.z += cosf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
 
-	}
-	else if (pInputKeyboard->Repeat(DIK_E) == true)
-	{
-		m_rot.z -= 0.01f;
-		m_posR.y += sinf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
-		m_posR.x += cosf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+	//	if (m_rot.y < -D3DX_PI)
+	//	{
+	//		m_rot.y += D3DX_PI * 2;
+	//	}
+	//}
 
-		if (m_rot.z < -D3DX_PI)
-		{
-			m_rot.z += D3DX_PI * 2;
-		}
+	////視点の旋回
+	//if (pInputKeyboard->Repeat(DIK_V) == true)
+	//{
+	//	m_rot.y += 0.01f;
+	//	if (m_rot.y > D3DX_PI)
+	//	{
+	//		m_rot.y -= D3DX_PI * 2;
+	//	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_C) == true)
+	//{
+	//	m_rot.y -= 0.01f;
+	//	if (m_rot.y < -D3DX_PI)
+	//	{
+	//		m_rot.y += D3DX_PI * 2;
+	//	}
+	//}
 
-	}
+	////視点の旋回
+	//if (pInputKeyboard->Repeat(DIK_J) == true)
+	//{
+	//	m_rot.x += 0.01f;
+	//	if (m_rot.x > D3DX_PI)
+	//	{
+	//		m_rot.x -= D3DX_PI * 2;
+	//	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_K) == true)
+	//{
+	//	m_rot.x -= 0.01f;
+	//	if (m_rot.x < D3DX_PI)
+	//	{
+	//		m_rot.x += D3DX_PI * 2;
+	//	}
+	//}
+
+	////注視点の旋回
+	//if (pInputKeyboard->Repeat(DIK_Q) == true)
+	//{
+	//	m_rot.z += 0.01f;
+	//	m_posR.y += sinf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+	//	m_posR.x += cosf(D3DX_PI * 0.5f + m_rot.y) * 2.0f;
+
+	//	if (m_rot.z > D3DX_PI)
+	//	{
+	//		m_rot.z -= D3DX_PI * 2;
+	//	}
+
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_E) == true)
+	//{
+	//	m_rot.z -= 0.01f;
+	//	m_posR.y += sinf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+	//	m_posR.x += cosf(D3DX_PI * 0.5f + m_rot.y) * -2.0f;
+
+	//	if (m_rot.z < -D3DX_PI)
+	//	{
+	//		m_rot.z += D3DX_PI * 2;
+	//	}
+
+	//}
 
 
 	//角度の正規化

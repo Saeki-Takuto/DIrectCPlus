@@ -16,6 +16,7 @@ CFade::CFade()
 
 CFade::~CFade()
 {
+	Uninit();
 }
 
 HRESULT CFade::Init()
@@ -123,12 +124,20 @@ void CFade::Update()
 
 }
 
-void CFade::Draw()
+void CFade::Draw(void)
 {
-	CRenderer* renderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice = renderer->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// 頂点バッファをデータストリームに設定
+	// テクスチャ解除
+	pDevice->SetTexture(0, nullptr);
+
+	// テクスチャステージをカラーのみ（頂点カラー）に設定
+	pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+	pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+
+	// 頂点バッファ・FVF・カラー設定は従来通り
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 
 	// 頂点フォーマットの設定
@@ -137,6 +146,13 @@ void CFade::Draw()
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
+	// 必要なら、描画後にテクスチャステージを元に戻す
+	pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+	pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 }
 
 CFade* CFade::Create()

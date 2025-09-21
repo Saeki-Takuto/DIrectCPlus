@@ -32,6 +32,7 @@ C3DPlayer::C3DPlayer()
 	m_vtxMax = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_vtxMin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_size = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_onGoal = false;
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
@@ -440,182 +441,440 @@ void C3DPlayer::Uninit(void)
 	}
 }
 
-//================================================
-//更新処理
-//================================================
+////================================================
+////更新処理
+////================================================
+//void C3DPlayer::Update(void)
+//{
+//	CInputKeyboard* pInputKeyboard;
+//	pInputKeyboard = CManager::GetInputKeyboard();
+//	D3DXVECTOR3 CamRot;
+//	//カメラの取得
+//	CCamera* pCamera = CManager::GetCamera();
+//
+//	CamRot = pCamera->GetRot();
+//
+//	m_posOld = m_pos;
+//
+//	if (pInputKeyboard->Repeat(DIK_DOWN) == true)
+//	{
+//		m_move.x += sinf(CamRot.y);
+//		m_move.z += cosf(CamRot.y);
+//		m_rotDest.y = CamRot.y - D3DX_PI;
+//	}
+//	else if (pInputKeyboard->Repeat(DIK_UP) == true)
+//	{
+//		m_move.x -= sinf(CamRot.y);
+//		m_move.z -= cosf(CamRot.y);
+//		m_rotDest.y = CamRot.y;
+//
+//	}
+//	else if (pInputKeyboard->Repeat(DIK_RIGHT) == true)
+//	{
+//		m_move.z += sinf(CamRot.y);
+//		m_move.x -= cosf(CamRot.y);
+//		m_rotDest.y = CamRot.y + D3DX_PI * 0.5f;
+//	}
+//	else if (pInputKeyboard->Repeat(DIK_LEFT) == true)
+//	{
+//		m_move.z -= sinf(CamRot.y);
+//		m_move.x += cosf(CamRot.y);
+//		m_rotDest.y = CamRot.y - D3DX_PI * 0.5f;
+//	}
+//
+//	//gameのRockとObject3Dを取得
+//	//CRock* pRock = CGame::GetRock();
+//
+//	//ポインタを取得
+//	CObject* pObject = CObject::GetTop(static_cast<int>(CObject::OBJECT_TYPE::TYPE_MAX));
+//
+//	//Object3Dを取得
+//	CObject3D* pObject3D = CManager::GetObject3D();
+//
+//
+//
+//	m_pos += m_move;
+//
+//	//移動量を更新(減衰させる)
+//	m_move.x += (0.0f - m_move.x) * 0.17f;
+//	m_move.z += (0.0f - m_move.z) * 0.17f;
+//
+//	//m_pos = pRock->Colision(m_pos, m_posOld, m_size);
+//
+//	for (int prio = 0; prio < OBJECT_PRIORITY_MAX; ++prio) {
+//		CObject* obj = CObject::GetTop(prio);
+//		while (obj != nullptr) {
+//			if (obj->GetType() == CObject::TYPE_ROCK) {
+//				// ここでRock用の処理
+//				CRock* pRock = dynamic_cast<CRock*>(obj);
+//				if (pRock) {
+//					// 例: 当たり判定
+//					m_pos = pRock->Colision(m_pos, m_posOld, m_size);
+//				}
+//			}
+//			obj = obj->GetNext();
+//		}
+//	}
+//
+//	//// 現在座標の地面の高さを取得
+//	//float groundY = 0.0f;
+//	//if (pObject3D) {
+//	//	groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+//	//}
+//
+//	//float rockY = 0.0f;
+//	//if (pRock) {
+//	//	rockY = pRock->GetHeight(m_pos.x, m_pos.z);
+//	//}
+//
+//	// 足場の高さを決定（地面と岩のうち高い方）
+//	//float platformY = (groundY > rockY) ? groundY : rockY;
+//
+//	//// 現在座標の地面の高さを取得
+//	//float groundY = 0.0f;
+//	//if (pObject3D) {
+//	//	groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+//	//}
+//
+//	//float rockY = 0.0f;
+//	//if (pRock) {
+//	//	rockY = pRock->GetHeight(m_pos.x, m_pos.z);
+//	//}
+//
+//	//// ジャンプ処理
+//	//if (pInputKeyboard->Trigger(DIK_SPACE) == true)
+//	//{
+//	//	// 地面またはobject3Dの上にいるときだけジャンプ可能
+//	//	if (!m_bJump && fabs(m_pos.y - groundY) < 0.15f)
+//	//	{
+//	//		m_move.y += 4.0f;
+//	//		m_bJump = true;
+//	//	}
+//	//}
+//
+//
+//
+//	if (m_rotDest.y - m_rot.y >= D3DX_PI)
+//	{
+//		m_rot.y += D3DX_PI * 2;
+//	}
+//	else if (m_rotDest.y - m_rot.y <= -D3DX_PI)
+//	{
+//		m_rot.y -= D3DX_PI * 2;
+//	}
+//
+//	m_rot.y += (m_rotDest.y - m_rot.y) * 0.1f;
+//
+//
+//
+//	// 落下処理
+//	m_move.y -= 0.1f;
+//
+//	// 着地判定
+//	bool onRock = false;
+//	float platformY = 0.0f; // 地面の高さ
+//	for (int prio = 0; prio < OBJECT_PRIORITY_MAX; ++prio) {
+//		CObject* obj = CObject::GetTop(prio);
+//		while (obj != nullptr) {
+//			if (obj->GetType() == CObject::TYPE_ROCK) {
+//				CRock* pRock = dynamic_cast<CRock*>(obj);
+//				if (pRock && pRock->IsOnTop(m_pos, m_size)) {
+//					float rockTop = pRock->GetPos().y + CRock::GetSize().y * 0.5f;
+//					if (m_pos.y < rockTop + 0.15f) {
+//						platformY = rockTop;
+//						onRock = true;
+//					}
+//				}
+//			}
+//			obj = obj->GetNext();
+//		}
+//	}
+//
+//	// 地面 or 岩の上にいる場合
+//	if (onRock) {
+//		m_pos.y = platformY;
+//		m_move.y = 0.0f;
+//		m_bJump = false;
+//	}
+//	else if (m_pos.y <= 0.0f) {
+//		m_pos.y = 0.0f;
+//		m_move.y = 0.0f;
+//		m_bJump = false;
+//	}	//// 着地判定
+//
+//		// ジャンプ処理
+//	if (pInputKeyboard->Trigger(DIK_SPACE) == true)
+//	{
+//		// 足場の上にいるときだけジャンプ可能
+//		if (!m_bJump)
+//		{
+//			m_move.y += 4.0f;
+//			m_bJump = true;
+//		}
+//	}
+//
+//
+//	//if (m_pos.y <=  0.0f)
+//	//{
+//	//	m_pos.y = 0.0f;
+//	//	m_move.y = 0.0f;
+//	//	m_bJump = false;
+//	//}
+//
+//	//// 着地判定
+//	//if (m_pos.y <= platformY + 0.05f)
+//	//{
+//	//	m_pos.y = platformY;
+//	//	m_move.y = 0.0f;
+//	//	m_bJump = false;
+//	//}
+//	 
+//	
+//	//モデルの解放
+//	for (int nCnt = 0; nCnt < MAX_PARTS; nCnt++)
+//	{
+//		if (m_apModel[nCnt] != nullptr)
+//		{
+//			m_apModel[nCnt]->Update();
+//		}
+//	}
+//
+//	if (pInputKeyboard->Repeat(DIK_1)) {
+//		for (int i = 0; i < m_nNumModel; i++) {
+//			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_NEUTRAL);
+//		}
+//	}
+//	else if (pInputKeyboard->Repeat(DIK_2)) {
+//		for (int i = 0; i < m_nNumModel; i++) {
+//			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_MOVE);
+//		}
+//	}
+//	else if (pInputKeyboard->Repeat(DIK_3)) {
+//		for (int i = 0; i < m_nNumModel; i++) {
+//			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_ONE);
+//		}
+//	}
+//	else if (pInputKeyboard->Repeat(DIK_4)) {
+//		for (int i = 0; i < m_nNumModel; i++) {
+//			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_TWO);
+//		}
+//	}
+//	else if (pInputKeyboard->Repeat(DIK_5)) {
+//		for (int i = 0; i < m_nNumModel; i++) {
+//			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_THREE);
+//		}
+//	}
+//
+//
+//	////プレイヤーがobject3Dの内側にいるとき
+//	//m_pos.y = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
+//}
+
 void C3DPlayer::Update(void)
 {
-	CInputKeyboard* pInputKeyboard;
-	pInputKeyboard = CManager::GetInputKeyboard();
-	D3DXVECTOR3 CamRot;
-	//カメラの取得
-	CCamera* pCamera = CManager::GetCamera();
-
-	CamRot = pCamera->GetRot();
-
+	CInputKeyboard* pInputKeyboard = CManager::GetInputKeyboard();
+	D3DXVECTOR3 CamRot = CManager::GetCamera()->GetRot();
 	m_posOld = m_pos;
 
-	if (pInputKeyboard->Repeat(DIK_DOWN) == true)
-	{
+	// 移動入力
+	if (pInputKeyboard->Repeat(DIK_S)) {
 		m_move.x += sinf(CamRot.y);
 		m_move.z += cosf(CamRot.y);
 		m_rotDest.y = CamRot.y - D3DX_PI;
 	}
-	else if (pInputKeyboard->Repeat(DIK_UP) == true)
-	{
+	else if (pInputKeyboard->Repeat(DIK_W)) {
 		m_move.x -= sinf(CamRot.y);
 		m_move.z -= cosf(CamRot.y);
 		m_rotDest.y = CamRot.y;
-
 	}
-	else if (pInputKeyboard->Repeat(DIK_RIGHT) == true)
-	{
+	else if (pInputKeyboard->Repeat(DIK_D)) {
 		m_move.z += sinf(CamRot.y);
 		m_move.x -= cosf(CamRot.y);
 		m_rotDest.y = CamRot.y + D3DX_PI * 0.5f;
 	}
-	else if (pInputKeyboard->Repeat(DIK_LEFT) == true)
-	{
+	else if (pInputKeyboard->Repeat(DIK_A)) {
 		m_move.z -= sinf(CamRot.y);
 		m_move.x += cosf(CamRot.y);
 		m_rotDest.y = CamRot.y - D3DX_PI * 0.5f;
 	}
 
-	//gameのRockとObject3Dを取得
-	CRock* pRock = CGame::GetRock();
-
-	//Object3Dを取得
-	CObject3D* pObject3D = CManager::GetObject3D();
-
-	// ジャンプ処理
-	if (pInputKeyboard->Trigger(DIK_SPACE) == true)
-	{
-		// 足場の上にいるときだけジャンプ可能
-		if (!m_bJump)
-		{
-			m_move.y += 4.0f;
-			m_bJump = true;
-		}
-	}
-
-
+	// 移動
 	m_pos += m_move;
 
-	//移動量を更新(減衰させる)
+	// 移動量減衰
 	m_move.x += (0.0f - m_move.x) * 0.17f;
 	m_move.z += (0.0f - m_move.z) * 0.17f;
 
-	m_pos = pRock->Colision(m_pos, m_posOld, m_size);
+	// 岩との当たり判定
+	for (int prio = 0; prio < OBJECT_PRIORITY_MAX; ++prio) {
+		CObject* obj = CObject::GetTop(prio);
+		while (obj != nullptr) {
+			if (obj->GetType() == CObject::TYPE_ROCK) {
+				CRock* pRock = dynamic_cast<CRock*>(obj);
+				if (pRock) {
+					m_pos = pRock->Colision(m_pos, m_posOld, m_size);
+				}
+			}
+			else if (obj->GetType() == CObject::TYPE_GOAL) {
+				CGoal* pGoal = dynamic_cast<CGoal*>(obj);
+				if (pGoal) {
+					m_pos = pGoal->Colision(m_pos, m_posOld, m_size);
+				}
+			}
+			//else if (obj->GetType() == CObject::TYPE_WALL) {
+			//	CWall* pWall = dynamic_cast<CWall*>(obj);
+			//	if (pWall) {
+			//		m_pos = pWall->Colision(m_pos, m_posOld, m_size);
+			//	}
+			//}
+			obj = obj->GetNext();
+		}
+	}
 
+	// 回転補正
+	if (m_rotDest.y - m_rot.y >= D3DX_PI) {
+		m_rot.y += D3DX_PI * 2;
+	}
+	else if (m_rotDest.y - m_rot.y <= -D3DX_PI) {
+		m_rot.y -= D3DX_PI * 2;
+	}
+	m_rot.y += (m_rotDest.y - m_rot.y) * 0.1f;
 
-	//// 現在座標の地面の高さを取得
-	//float groundY = 0.0f;
-	//if (pObject3D) {
-	//	groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
-	//}
+	// 重力
+	m_move.y -= 0.1f;
 
-	//float rockY = 0.0f;
-	//if (pRock) {
-	//	rockY = pRock->GetHeight(m_pos.x, m_pos.z);
-	//}
+	if (m_pos.z - m_size.z * 0.5f > 145.0f) {
+		m_pos.z = m_size.z * 0.5f + 145.0f;
+	}
 
-	// 足場の高さを決定（地面と岩のうち高い方）
-	//float platformY = (groundY > rockY) ? groundY : rockY;
-
-	//// 現在座標の地面の高さを取得
-	//float groundY = 0.0f;
-	//if (pObject3D) {
-	//	groundY = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
-	//}
-
-	//float rockY = 0.0f;
-	//if (pRock) {
-	//	rockY = pRock->GetHeight(m_pos.x, m_pos.z);
-	//}
-
-	//// ジャンプ処理
-	//if (pInputKeyboard->Trigger(DIK_SPACE) == true)
-	//{
-	//	// 地面またはobject3Dの上にいるときだけジャンプ可能
-	//	if (!m_bJump && fabs(m_pos.y - groundY) < 0.15f)
-	//	{
-	//		m_move.y += 4.0f;
-	//		m_bJump = true;
+	//// --- 着地判定 ---
+	//bool onRock = false;
+	//float rockPlatformY = 0.0f;
+	//for (int prio = 0; prio < OBJECT_PRIORITY_MAX; ++prio) {
+	//	CObject* obj = CObject::GetTop(prio);
+	//	while (obj != nullptr) {
+	//		if (obj->GetType() == CObject::TYPE_ROCK) {
+	//			CRock* pRock = dynamic_cast<CRock*>(obj);
+	//			if (pRock && pRock->IsOnTop(m_pos, m_size)) {
+	//				float rockTop = pRock->GetPos().y + CRock::GetSize().y * 0.5f;
+	//				rockPlatformY = rockTop;
+	//				onRock = true;
+	//			}
+	//		}
+	//		obj = obj->GetNext();
 	//	}
 	//}
 
+	//// 地面判定
+	//bool onGround = (m_pos.y <= 0.0f);
 
+	//// フラグ管理
+	//if (onGround) {
+	//	m_pos.y = 0.0f;
+	//	m_move.y = 0.0f;
+	//	m_bJumpGround = false;
+	//}
+	//else {
+	//	m_bJumpGround = true;
+	//}
 
-	if (m_rotDest.y - m_rot.y >= D3DX_PI)
-	{
-		m_rot.y += D3DX_PI * 2;
+	//if (onRock) {
+	//	m_pos.y = rockPlatformY;
+	//	m_move.y = 0.0f;
+	//	m_bJumpObject = false;
+	//}
+	//else {
+	//	m_bJumpObject = true;
+	//}
+
+	// --- 着地判定 ---
+	bool onRock = false;
+	float rockPlatformY = 0.0f;
+	for (int prio = 0; prio < OBJECT_PRIORITY_MAX; ++prio) {
+		CObject* obj = CObject::GetTop(prio);
+		while (obj != nullptr) {
+			if (obj->GetType() == CObject::TYPE_ROCK) {
+				CRock* pRock = dynamic_cast<CRock*>(obj);
+				if (pRock && pRock->IsOnTop(m_pos, m_size)) {
+					float rockTop = pRock->GetPos().y + CRock::GetSize().y; // ←底面がposなら.5f不要
+					rockPlatformY = rockTop;
+					onRock = true;
+				}
+			}
+			else if (obj->GetType() == CObject::TYPE_GOAL) {
+				CGoal* pGoal = dynamic_cast<CGoal*>(obj);
+				if (pGoal && pGoal->IsOnTop(m_pos, m_size)) {
+					float rockTop = pGoal->GetPos().y + CGoal::GetSize().y; // ←底面がposなら.5f不要
+					rockPlatformY = rockTop;
+					m_onGoal = true;
+				}
+			}
+
+			obj = obj->GetNext();
+		}
 	}
-	else if (m_rotDest.y - m_rot.y <= -D3DX_PI)
-	{
-		m_rot.y -= D3DX_PI * 2;
+
+	if (onRock||m_onGoal) {
+		m_pos.y = rockPlatformY;
+		m_move.y = 0.0f;
+		m_bJumpObject = false;
+		m_bJumpGround = true; // 岩の上にいるときは地面ジャンプ不可
 	}
-
-	m_rot.y += (m_rotDest.y - m_rot.y) * 0.1f;
-
-
-
-	m_move.y -= 0.1f;
-
-	// 着地判定
-	if (m_pos.y <=  0.0f)
-	{
+	else if (m_pos.y <= 0.0f) {
 		m_pos.y = 0.0f;
 		m_move.y = 0.0f;
-		m_bJump = false;
+		m_bJumpGround = false;
+		m_bJumpObject = true; // 地面の上にいるときは岩ジャンプ不可
+	}
+	else {
+		m_bJumpGround = true;
+		m_bJumpObject = true;
 	}
 
-	//// 着地判定
-	//if (m_pos.y <= platformY + 0.05f)
-	//{
-	//	m_pos.y = platformY;
-	//	m_move.y = 0.0f;
-	//	m_bJump = false;
-	//}
-	 
-	
-	//モデルの解放
-	for (int nCnt = 0; nCnt < MAX_PARTS; nCnt++)
-	{
-		if (m_apModel[nCnt] != nullptr)
-		{
+	// --- ジャンプ処理 ---
+	if (pInputKeyboard->Trigger(DIK_SPACE)) {
+		// どちらかの足場にいればジャンプ可能
+		if (!m_bJumpGround || !m_bJumpObject) {
+			m_move.y += 4.0f;
+			m_bJumpGround = true;
+			m_bJumpObject = true;
+		}
+	}
+
+	// モデル更新
+	for (int nCnt = 0; nCnt < MAX_PARTS; nCnt++) {
+		if (m_apModel[nCnt] != nullptr) {
 			m_apModel[nCnt]->Update();
 		}
 	}
 
-	if (pInputKeyboard->Repeat(DIK_1)) {
-		for (int i = 0; i < m_nNumModel; i++) {
-			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_NEUTRAL);
-		}
-	}
-	else if (pInputKeyboard->Repeat(DIK_2)) {
-		for (int i = 0; i < m_nNumModel; i++) {
-			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_MOVE);
-		}
-	}
-	else if (pInputKeyboard->Repeat(DIK_3)) {
-		for (int i = 0; i < m_nNumModel; i++) {
-			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_ONE);
-		}
-	}
-	else if (pInputKeyboard->Repeat(DIK_4)) {
-		for (int i = 0; i < m_nNumModel; i++) {
-			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_TWO);
-		}
-	}
-	else if (pInputKeyboard->Repeat(DIK_5)) {
-		for (int i = 0; i < m_nNumModel; i++) {
-			if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_THREE);
-		}
-	}
+	// モーション切り替え
+	//if (pInputKeyboard->Repeat(DIK_1)) {
+	//	for (int i = 0; i < m_nNumModel; i++) {
+	//		if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_NEUTRAL);
+	//	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_2)) {
+	//	for (int i = 0; i < m_nNumModel; i++) {
+	//		if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_MOVE);
+	//	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_3)) {
+	//	for (int i = 0; i < m_nNumModel; i++) {
+	//		if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_ONE);
+	//	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_4)) {
+	//	for (int i = 0; i < m_nNumModel; i++) {
+	//		if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_TWO);
+	//	}
+	//}
+	//else if (pInputKeyboard->Repeat(DIK_5)) {
+	//	for (int i = 0; i < m_nNumModel; i++) {
+	//		if (m_apModel[i]) m_apModel[i]->SetMotionType(CModel::MOTION_TYPE_THREE);
+	//	}
+	//}
 
-
-	////プレイヤーがobject3Dの内側にいるとき
-	//m_pos.y = pObject3D->GetHeightMesh(m_pos.x, m_pos.z);
 }
 
 //================================================
@@ -646,8 +905,6 @@ void C3DPlayer::Draw(void)
 	//現在のプロジェクションマトリックスを取得(保存)
 	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjectionDef);
 
-
-
 	// プレイヤーの後方上空からプレイヤーを見るカメラ
 	//D3DXVECTOR3 posV = m_pos + D3DXVECTOR3(-sinf(m_rot.y) * 200.0f, 100.0f, -cosf(m_rot.y) * 200.0f); // カメラ位置
 	//D3DXVECTOR3 posR = m_pos; // 注視点（プレイヤーの位置）
@@ -661,7 +918,7 @@ void C3DPlayer::Draw(void)
 
 	//レンダリングターゲット用のテクスチャのクリア
 // 3DPlayer::Draw()の最初で
-	pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(255, 0, 0, 255), 1.0f, 0);
+	//pDevice->Clear(0, NULL, (D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER), D3DCOLOR_RGBA(255, 0, 0, 255), 1.0f, 0);
 
 	D3DXMATRIX mtxRot, mtxTrans;//計算用マトリックス
 	D3DMATERIAL9 matDef;//現在のマテリアル保存用
@@ -757,6 +1014,7 @@ C3DPlayer* C3DPlayer::Create()
 	C3DPlayer* p3DPlayer = new C3DPlayer;
 
 	p3DPlayer->Init();
+	p3DPlayer->SetType(CObject::TYPE_PLAYER);
 
 	return p3DPlayer;
 }

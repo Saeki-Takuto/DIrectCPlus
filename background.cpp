@@ -98,12 +98,27 @@ HRESULT CBackground::Load(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/TITLE.png", &m_pTexture[BACKGROUND_TYPE_CLOUD])))
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/BACK.png", &m_pTexture[BACKGROUND_TYPE_BACK])))
 	{
 		return E_FAIL;
 	}
 
-	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/bg103.jpg", &m_pTexture[BACKGROUND_TYPE_BACK])))
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/TITLE.png", &m_pTexture[BACKGROUND_TYPE_TITLE])))
+	{
+		return E_FAIL;
+	}
+
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/GOAL.png", &m_pTexture[BACKGROUND_TYPE_GOAL])))
+	{
+		return E_FAIL;
+	}
+
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/RESULT.png", &m_pTexture[BACKGROUND_TYPE_RESULT])))
+	{
+		return E_FAIL;
+	}
+
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/TUTORIAL.png", &m_pTexture[BACKGROUND_TYPE_TUTORIAL])))
 	{
 		return E_FAIL;
 	}

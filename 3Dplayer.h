@@ -33,6 +33,7 @@ public:
     void Update(void);
     void Draw(void);
 
+	bool GetonGoal(void) { return m_onGoal; }
     D3DXVECTOR3 GetPos(void) override;
     D3DXVECTOR3 GetRot(void);
     D3DXVECTOR3 GetMove(void);
@@ -47,6 +48,11 @@ private:
     D3DXVECTOR3 m_rotDest;
     D3DXVECTOR3 m_move;
     bool m_bJump;
+
+    bool m_bJumpGround;   // 地面用
+    bool m_bJumpObject;   // 3Dオブジェクト（岩など）用
+    bool m_onGoal;
+
     bool m_bOnGround;
     CModel* m_apModel[MAX_PARTS];
     int m_nNumModel;

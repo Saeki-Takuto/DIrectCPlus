@@ -161,12 +161,12 @@ CObject::~CObject()
 
 CObject* CObject::GetTop(int nPriority)
 {
-	return nullptr;
+	return m_pTop[nPriority];
 }
 
 CObject* CObject::GetNext(void)
 {
-	return nullptr;
+	return m_pNext;
 }
 
 void CObject::Release(void)

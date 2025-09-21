@@ -236,10 +236,19 @@ void CRenderer::Update(void)
 //================================================
 void CRenderer::Draw(void)
 {
-	////画面クリア(バックバッファ&Zバッファのクリア)
-	//m_pD3DDevice->Clear(0, NULL,
-	//	(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-	//	D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+    // 毎フレームαブレンド設定を初期化
+    m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    // テクスチャステージの設定（追加）
+    m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
 
 	//画面クリア(バックバッファ&Zバッファのクリア)
 	m_pD3DDevice->Clear(0, NULL,
@@ -253,7 +262,7 @@ void CRenderer::Draw(void)
 
 		CObject::DrawAll();
 
-		m_pDebug->Print("FPS:%d",m_fps);
+		//m_pDebug->Print("FPS:%d",m_fps);
 
 		m_pDebug->Draw();
 

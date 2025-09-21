@@ -216,6 +216,7 @@ CWall* CWall::Create(void)
 {
 	CWall* pObject3D = new CWall;
 	pObject3D->Init();
+	pObject3D->SetType(TYPE_WALL);
 
 	return pObject3D;
 }
@@ -280,7 +281,51 @@ float CWall::GetHeightMesh(float posx, float posz)
 	return 0;
 }
 
+D3DXVECTOR3 CWall::Colision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size)
+{
+	// 壁のAABB
+	D3DXVECTOR3 wallPos = m_posPolygon;
+	float wallHalfW = WALL_WIDTH;
+	float wallHalfH = WALL_HEIGHT;
 
+	// プレイヤーのAABB
+	float playerHalfW = size.x * 0.5f;
+	float playerHalfH = size.y * 0.5f;
+	float playerHalfD = size.z * 0.5f;
+
+	// XZ平面での判定
+	float wallMinX = wallPos.x - wallHalfW;
+	float wallMaxX = wallPos.x + wallHalfW;
+	float wallMinZ = wallPos.z - wallHalfH;
+	float wallMaxZ = wallPos.z + wallHalfH;
+
+	float playerMinX = pos.x - playerHalfW;
+	float playerMaxX = pos.x + playerHalfW;
+	float playerMinZ = pos.z - playerHalfD;
+	float playerMaxZ = pos.z + playerHalfD;
+
+	// AABB衝突判定
+	if (playerMaxX > wallMinX && playerMinX < wallMaxX &&
+		playerMaxZ > wallMinZ && playerMinZ < wallMaxZ)
+	{
+		// めり込み補正（最も近い方向に押し戻す）
+		float dx1 = wallMaxX - playerMinX; // 左から押し戻す量
+		float dx2 = playerMaxX - wallMinX; // 右から押し戻す量
+		float dz1 = wallMaxZ - playerMinZ; // 上から押し戻す量
+		float dz2 = playerMaxZ - wallMinZ; // 下から押し戻す量
+
+		float minDx = (dx1 < dx2) ? dx1 : -dx2;
+		float minDz = (dz1 < dz2) ? dz1 : -dz2;
+
+		if (fabs(minDx) < fabs(minDz)) {
+			pos.x += minDx;
+		}
+		else {
+			pos.z += minDz;
+		}
+	}
+	return pos;
+}
 //float CWall::GetHeightMesh(float posx, float posz)
 //{
 //	float X = posx - m_posPolygon.x;

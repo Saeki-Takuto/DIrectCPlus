@@ -45,6 +45,7 @@ public:
 	D3DXVECTOR3 GetPos(void) override;
 	int GetWidth(void) override;
 	int GetHeight(void) override;
+	D3DXVECTOR3 Colision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size);
 
 	float GetHeightMesh(float posx, float posz);
 

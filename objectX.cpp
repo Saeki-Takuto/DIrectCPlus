@@ -4,10 +4,14 @@
 
 CObjectX::CObjectX()
 {
+	m_pMesh = NULL;
+	m_pBuffMat = NULL;
+	m_dwNumMat = NULL;
 }
 
 CObjectX::~CObjectX()
 {
+	//Uninit();
 }
 
 HRESULT CObjectX::Init(void)
@@ -19,7 +23,7 @@ HRESULT CObjectX::Init(void)
 	CObjectX::BindX(m_pBuffMat, m_dwNumMat, m_pMesh);
 
 	////Xファイルの読み込み
-	//D3DXLoadMeshFromX("data/MODEL/privacy.x",
+	//D3DXLoadMeshFromX("data/MODEL/rock.x",
 	//	D3DXMESH_SYSTEMMEM,
 	//	pDevice,
 	//	NULL,
@@ -49,20 +53,21 @@ HRESULT CObjectX::Init(void)
 
 void CObjectX::Uninit(void)
 {
-	//テクスチャの解放
+	//テクスチャの解放　
 	if (m_pMesh != NULL)
 	{
-		m_pMesh->Release();
+		//m_pMesh->Release();
 		m_pMesh = NULL;
 	}
+
 	//頂点バッファの解放
 	if (m_pBuffMat != NULL)
 	{
-		m_pBuffMat->Release();
+		//m_pBuffMat->Release();
 		m_pBuffMat = NULL;
 	}
 
-	for (int nCnt = 0; nCnt < 128; nCnt++)
+	for (int nCnt = 0; nCnt < (int)m_dwNumMat; nCnt++)
 	{
 		//テクスチャの破棄
 		if (m_apTexture[nCnt] != NULL)

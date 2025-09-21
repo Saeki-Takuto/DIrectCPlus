@@ -97,7 +97,7 @@ HRESULT CScore::Load(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/number000.png", &m_pTexture[SCORE_TYPE_NORMAL_01])))
+	if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/number001.png", &m_pTexture[SCORE_TYPE_NORMAL_01])))
 	{
 		return E_FAIL;
 	}

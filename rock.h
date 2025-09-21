@@ -52,10 +52,10 @@ public:
     static HRESULT Load(void);
     static void Unload(void);
     float GetHeight(float posx, float posz);
+	static D3DXVECTOR3 GetSize(void) { return m_size; }
 
 	D3DXVECTOR3 Colision(D3DXVECTOR3 pos, D3DXVECTOR3 posOld, D3DXVECTOR3 size);
-
-
+    bool IsOnTop(const D3DXVECTOR3& playerPos, const D3DXVECTOR3& playerSize);
 
 private:
     static LPD3DXMESH m_pMesh;
